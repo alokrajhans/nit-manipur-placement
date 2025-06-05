@@ -1,0 +1,69 @@
+import React from "react";
+import { Grid, Container, Box } from "@mui/material";
+import CoordinatorTile from "@/src/components/coordinator";
+import Navbar from "@/src/components/Navbar";
+
+export default function Coordinators() {
+  const data = [
+    {
+      name: "Alok Raj",
+      branch: "ECE",
+      enrollmentNumber: "NITM123456",
+      email: "alokraj@nitm.ac.in",
+      contactNumber: "9876543210",
+    },
+    {
+      name: "Neha Sharma",
+      branch: "CSE",
+      enrollmentNumber: "NITM654321",
+      email: "neha@nitm.ac.in",
+      contactNumber: "9123456789",
+    },
+    {
+      name: "Rahul Kumar",
+      branch: "ME",
+      enrollmentNumber: "NITM789012",
+      email: "rahul@nitm.ac.in",
+      contactNumber: "9988776655",
+    },
+    {
+      name: "Sneha Das",
+      branch: "CE",
+      enrollmentNumber: "NITM567890",
+      email: "sneha@nitm.ac.in",
+      contactNumber: "9112233445",
+    },
+    {
+      name: "Amit Verma",
+      branch: "EE",
+      enrollmentNumber: "NITM333222",
+      email: "amit@nitm.ac.in",
+      contactNumber: "9012345678",
+    },
+  ];
+
+  // Define custom branch order
+  const branchOrder = ["CSE", "ECE", "EE", "ME", "CE"];
+
+  // Sort data based on branch priority
+  const sortedData = data.sort(
+    (a, b) => branchOrder.indexOf(a.branch) - branchOrder.indexOf(b.branch)
+  );
+
+  return (
+    <Container>
+      <Box>
+        <Navbar />
+      </Box>
+      <Container sx={{ mt: 4 }}>
+        <Grid container spacing={3}>
+          {sortedData.map((coord, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <CoordinatorTile {...coord} />
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </Container>
+  );
+}
