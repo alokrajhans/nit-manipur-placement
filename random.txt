@@ -1,0 +1,97 @@
+interested_students
+
+selected_students
+
+companies_visited
+
+ongoing_jobs
+
+id
+enrollment_number
+full_name
+college_email
+gmail_id
+phone_number
+alternate_phone_number
+cgpa
+class_12th_percentage
+class_10th_percentage
+resume_drive_link
+Age
+gap_year
+Branch
+Backlog
+Gender
+Course
+Batch
+date_updated
+
+id
+enrollment_number
+full_name
+Branch
+offers
+company1
+package1
+type1
+internship1
+company2
+package2
+type2
+internship2
+company3
+package3
+type3
+internship3
+
+id
+company_name
+type
+date
+package
+offers
+internship
+hr_email
+hr_contact
+
+
+id
+company_name
+job_title
+type
+oppotunity
+Branch
+package
+remarks
+Course
+min_cgpa
+deadline
+class_12th_percentage
+class_10th_percentage
+bond
+stipend
+date_updated
+
+
+get jobs
+post jobs
+post jobs-applied
+get companies visited
+get selected students
+post selected student
+get total interested students
+get students not placed
+get total Job offers
+get branchwise -> interested students,placed students
+get coordinator list
+get rules of placement
+get my profile
+post my profile
+get user detail for login
+post user for registering
+
+ npm run build --build server
+ npm start -p 3030-- to run server
+
+ mysql -h trolley.proxy.rlwy.net -P 20780 -u root -p railway --to start mysql
+  npm run dev-- to run frontend
