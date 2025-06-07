@@ -60,7 +60,7 @@ const Navbar = () => {
     // >
     //   MyLogo
     // </Typography>
-    <Box ml={"-15px"} mt={"10px"} mr={"10px"} >
+    <Box ml={"-10x"} mt={"9px"}mr={"2px"}>
     <Link href="/" passHref>
       <Image
         src="/logo.png"
