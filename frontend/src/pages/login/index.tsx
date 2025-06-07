@@ -73,7 +73,7 @@ export default function LoginPage() {
     }
   }, []);
   useEffect(() => {
-    console.log("✅ User state after dispatch:", user);
+    // console.log("✅ User state after dispatch:", user);
   }, [user]);
   return (
     <Box

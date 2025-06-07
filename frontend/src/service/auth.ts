@@ -35,7 +35,7 @@ export interface AuthPayload {
 export const loginUser = async (payload: AuthPayload): Promise<AuthResponse> => {
     try {
       const response = await apiClient.post('/login', payload);
-      console.log('Login response:', response.data);
+      // console.log('Login response:', response.data);
       return response.data;
     } catch (error: any) {
       if (error.response?.data) {

@@ -13,7 +13,7 @@ apiClient.interceptors.request.use(
   (config) => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("jwtToken");
-      console.log("🚀 JWT Token in Request:", token);
+      // console.log("🚀 JWT Token in Request:", token);
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

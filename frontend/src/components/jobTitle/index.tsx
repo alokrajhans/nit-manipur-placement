@@ -128,10 +128,10 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
             setStudentFound(false);
           }
           
-          console.log("222",res);
-          console.log("111",studentFound);
+          // console.log("222",res);
+          // console.log("111",studentFound);
         } catch (error) {
-          console.error("Error fetching interested student", error);
+          // console.error("Error fetching interested student", error);
           setStudentFound(false);
         }
         
@@ -146,7 +146,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
         );
         setAlreadyApplied(hasApplied);
       } catch (error) {
-        console.error("Error checking applied status", error);
+        // console.error("Error checking applied status", error);
         setStudentFound(false);
       }
     };

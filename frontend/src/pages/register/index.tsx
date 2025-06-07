@@ -30,7 +30,7 @@ export default function RegisterPage() {
       password,
       role:2
     };
-    console.log("111",payload);
+    // console.log("111",payload);
     const result = await registerUser(payload);
 
     if (result.error) {

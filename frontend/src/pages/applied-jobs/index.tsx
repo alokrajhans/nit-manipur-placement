@@ -48,13 +48,13 @@ export default function AppliedJobsPage() {
       const enrollment = candidate.enrollment_number.trim();
       const key = `${company}_${enrollment}`;
       if (seen.has(key)) {
-        console.log("Duplicate found and removed:", candidate);
+        // console.log("Duplicate found and removed:", candidate);
         return false;
       }
       seen.add(key);
       return true;
     });
-    console.log("Filtered unique candidates count:", filtered.length);
+    // console.log("Filtered unique candidates count:", filtered.length);
     return filtered;
   };
 
