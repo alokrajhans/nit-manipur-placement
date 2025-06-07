@@ -2,14 +2,9 @@
 
 import { useState } from "react";
 import { Button, TextField, Typography, Box } from "@mui/material";
-// import dynamic from "next/dynamic";
 import Image from "next/image";
 import zxcvbn from "zxcvbn";
-
-// Dynamically import the Scene component
-// const Scene = dynamic(() => import("@/src/components/Scene"), {
-//   ssr: false,
-// });
+import { registerUser } from "@/src/service/auth";
 
 export default function RegisterPage() {
   const [roll, setRoll] = useState("");
@@ -17,7 +12,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const strength = zxcvbn(password);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -30,8 +25,26 @@ export default function RegisterPage() {
       return;
     }
 
-    console.log("Registering:", { roll, password });
-    // proceed with submission
+    const payload = {
+      enrollment_number: roll,
+      password,
+      role:2
+    };
+    console.log("111",payload);
+    const result = await registerUser(payload);
+
+    if (result.error) {
+      alert(`Registration failed: ${result.error.message}`);
+      return;
+    }
+
+    alert(result.message || "User registered successfully!");
+    window.location.href = "/login";
+
+    // Reset form
+    setRoll("");
+    setPassword("");
+    setConfirmPassword("");
   };
 
   return (
@@ -46,7 +59,6 @@ export default function RegisterPage() {
         alignItems: "center",
       }}
     >
-      {/* Title */}
       <Typography
         variant="h3"
         component="h1"
@@ -59,7 +71,6 @@ export default function RegisterPage() {
         Training and Placement Cell NIT Manipur
       </Typography>
 
-      {/* Main content */}
       <Box
         display="flex"
         flexDirection="row"
@@ -69,11 +80,8 @@ export default function RegisterPage() {
         width="100%"
         mt={-10}
       >
-        {/* 3D Rotating Cube or Logo */}
+        {/* Logo */}
         <Box height="50vh" width="30vh" mr={-10} ml={-10} mt={20}>
-          {/* Uncomment if you want the 3D scene */}
-          {/* <Scene cubeSize={[2, 2, 2]} /> */}
-
           <Image
             src="/logo.png"
             alt="Logo"
@@ -84,6 +92,8 @@ export default function RegisterPage() {
             }}
           />
         </Box>
+
+        {/* Divider */}
         <Box display="flex" alignItems="center" mr={10}>
           <Box
             sx={{
@@ -97,7 +107,7 @@ export default function RegisterPage() {
           />
         </Box>
 
-        {/* Registration Form */}
+        {/* Form */}
         <Box
           display="flex"
           flexDirection="column"
@@ -156,6 +166,7 @@ export default function RegisterPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
+
             <Button
               variant="contained"
               type="submit"
@@ -163,9 +174,9 @@ export default function RegisterPage() {
               sx={{
                 mt: 1,
                 backgroundColor: "#388e3c",
-                color: "white", // Text color for contrast
+                color: "white",
                 "&:hover": {
-                  backgroundColor: "#2e7031", // Darker shade on hover
+                  backgroundColor: "#2e7031",
                 },
               }}
             >

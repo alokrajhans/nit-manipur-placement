@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -17,35 +17,32 @@ import {
 import Navbar from "@/src/components/Navbar";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-
-const companiesVisited = [
-  {
-    companyName: "Google",
-    type: "IT",
-    date: "2025-01-15",
-    package: 45,
-    offers: 10,
-    internship: "Yes",
-    hrEmail: "hr@google.com",
-    hrContact: "9876543210",
-    status: "Completed",
-  },
-  {
-    companyName: "Tata Steel",
-    type: "Core",
-    date: "2025-02-10",
-    package: 12,
-    offers: 5,
-    internship: "No",
-    hrEmail: "recruitment@tatasteel.com",
-    hrContact: "9123456789",
-    status: "Ongoing",
-  },
-  // Add more entries here if needed
-];
+import { getCompaniesVisited,CompanyVisited } from "@/src/service/companyVisited";
 
 export default function CompaniesVisitedPage() {
+  const [companiesVisited, setCompaniesVisited] = useState<CompanyVisited[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchCompanies() {
+      try {
+        setLoading(true);
+        const data = await getCompaniesVisited();
+        setCompaniesVisited(data);
+      } catch (err) {
+        setError("Failed to load companies data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCompanies();
+  }, []);
+
   const handleDownloadExcel = () => {
+    // Convert data to sheet
     const worksheet = XLSX.utils.json_to_sheet(companiesVisited);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Companies");
@@ -81,6 +78,7 @@ export default function CompaniesVisitedPage() {
               backgroundColor: "#388e3c",
               "&:hover": { backgroundColor: "#2e7d32" },
             }}
+            disabled={loading || companiesVisited.length === 0}
           >
             Download as Excel
           </Button>
@@ -88,38 +86,55 @@ export default function CompaniesVisitedPage() {
       </Box>
 
       <Box sx={{ overflowX: "auto" }}>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 1000 }} stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>Company Name</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell>Date</TableCell>
-                <TableCell>Package (LPA)</TableCell>
-                <TableCell>Offers</TableCell>
-                <TableCell>Internship</TableCell>
-                <TableCell>HR Email</TableCell>
-                <TableCell>HR Contact</TableCell>
-                <TableCell>Status</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {companiesVisited.map((company, index) => (
-                <TableRow key={index}>
-                  <TableCell>{company.companyName}</TableCell>
-                  <TableCell>{company.type}</TableCell>
-                  <TableCell>{company.date}</TableCell>
-                  <TableCell>{company.package}</TableCell>
-                  <TableCell>{company.offers}</TableCell>
-                  <TableCell>{company.internship}</TableCell>
-                  <TableCell>{company.hrEmail}</TableCell>
-                  <TableCell>{company.hrContact}</TableCell>
-                  <TableCell>{company.status}</TableCell>
+        {loading && <Typography>Loading companies data...</Typography>}
+        {error && (
+          <Typography color="error" sx={{ mt: 2 }}>
+            {error}
+          </Typography>
+        )}
+
+        {!loading && !error && companiesVisited.length === 0 && (
+          <Typography sx={{ mt: 2 }}>No companies visited data available.</Typography>
+        )}
+
+        {!loading && !error && companiesVisited.length > 0 && (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 1000 }} stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Company Name</TableCell>
+                  <TableCell>Type</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Package (LPA)</TableCell>
+                  <TableCell>Offers</TableCell>
+                  <TableCell>Internship</TableCell>
+                  <TableCell>HR Email</TableCell>
+                  <TableCell>HR Contact</TableCell>
+                  {/* <TableCell>Status</TableCell> */}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {companiesVisited.map((company, index) => (
+                  <TableRow key={company.id ?? index}>
+                    <TableCell>{company.company_name ?? "-"}</TableCell>
+                    <TableCell>{company.type ?? "-"}</TableCell>
+                    <TableCell>
+                      {company.date
+                        ? new Date(company.date).toLocaleDateString()
+                        : "-"}
+                    </TableCell>
+                    <TableCell>{company.package ?? "-"}</TableCell>
+                    <TableCell>{company.offers ?? "-"}</TableCell>
+                    <TableCell>{company.internship ?? "-"}</TableCell>
+                    <TableCell>{company.hr_email ?? "-"}</TableCell>
+                    <TableCell>{company.hr_contact ?? "-"}</TableCell>
+                    {/* <TableCell>{company.status ?? "-"}</TableCell> */}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Box>
     </Container>
   );

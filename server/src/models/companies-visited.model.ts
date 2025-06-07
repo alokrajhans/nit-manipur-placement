@@ -42,6 +42,11 @@ export class CompaniesVisited extends Entity {
   @property({
     type: 'string',
   })
+  status?: string;
+
+  @property({
+    type: 'string',
+  })
   hr_email?: string;
 
   @property({

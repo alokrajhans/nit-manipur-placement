@@ -1,22 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, TextField, Typography, Box } from "@mui/material";
-// import dynamic from "next/dynamic";
 import Image from "next/image";
 import zxcvbn from "zxcvbn";
-
-// Dynamically import the Scene component
-// const Scene = dynamic(() => import("@/src/components/Scene"), {
-//   ssr: false,
-// });
+import { loginUser } from "@/src/service/auth";
+import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@/src/components/hooks";
+import { setUserDetails } from "@/src/store/userSlice";
 
 export default function LoginPage() {
   const [roll, setRoll] = useState("");
   const [password, setPassword] = useState("");
   const strength = zxcvbn(password);
+  const dispatch = useAppDispatch();
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Optional: read user state for debug or logic after dispatch
+  const user = useAppSelector((state) => state.user);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (strength.score < 2) {
@@ -24,10 +26,55 @@ export default function LoginPage() {
       return;
     }
 
-    console.log("Logging in:", { roll, password });
-    // proceed with login submission (API call etc.)
+    try {
+      const { token, error, message, role } = await loginUser({
+        enrollment_number: roll,
+        password,
+      });
+
+      if (error) {
+        alert(`Login failed: ${error.message || message || "Unknown error"}`);
+        return;
+      }
+
+      if (!token) {
+        alert("Login failed: No token received.");
+        return;
+      }
+
+      // Save token in localStorage
+      localStorage.setItem("jwtToken", token);
+      localStorage.setItem("role", role.toString());
+      localStorage.setItem("enrollment_number", roll);
+
+      // Dispatch user details to Redux store
+
+      // Redirect to ongoing jobs page
+      window.location.href = "/ongoing-jobs";
+    } catch (error: any) {
+      console.error("Login error:", error);
+      alert(`Login failed: ${error?.message || "Unknown error"}`);
+    }
   };
 
+  // Dispatch user details to Redux store
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    const storedToken = localStorage.getItem("jwtToken");
+    const enrollment = localStorage.getItem("enrollment_number"); // optional parsing if JWT contains it
+
+    if (storedRole && enrollment) {
+      dispatch(
+        setUserDetails({
+          enrollment_number: enrollment,
+          role: Number(storedRole),
+        })
+      );
+    }
+  }, []);
+  useEffect(() => {
+    console.log("✅ User state after dispatch:", user);
+  }, [user]);
   return (
     <Box
       sx={{
@@ -40,7 +87,6 @@ export default function LoginPage() {
         alignItems: "center",
       }}
     >
-      {/* Title */}
       <Typography
         variant="h3"
         component="h1"
@@ -53,7 +99,6 @@ export default function LoginPage() {
         Training and Placement Cell NIT Manipur
       </Typography>
 
-      {/* Main content */}
       <Box
         display="flex"
         flexDirection="row"
@@ -63,11 +108,7 @@ export default function LoginPage() {
         width="100%"
         mt={-10}
       >
-        {/* 3D Rotating Cube or Logo */}
         <Box height="50vh" width="30vh" mr={-10} ml={-10} mt={20}>
-          {/* Uncomment if you want the 3D scene */}
-          {/* <Scene cubeSize={[2, 2, 2]} /> */}
-
           <Image
             src="/logo.png"
             alt="Logo"
@@ -78,6 +119,7 @@ export default function LoginPage() {
             }}
           />
         </Box>
+
         <Box display="flex" alignItems="center" mr={10}>
           <Box
             sx={{
@@ -91,7 +133,6 @@ export default function LoginPage() {
           />
         </Box>
 
-        {/* Login Form */}
         <Box
           display="flex"
           flexDirection="column"
@@ -158,6 +199,26 @@ export default function LoginPage() {
               Login
             </Button>
           </Box>
+
+          <Typography
+            variant="body2"
+            align="center"
+            sx={{ mt: 1, color: "white" }}
+          >
+            Not registered yet?{" "}
+            <Link href="/register" passHref legacyBehavior>
+              <a
+                style={{
+                  color: "#388e3c",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                  fontSize: "18px",
+                }}
+              >
+                Register here
+              </a>
+            </Link>
+          </Typography>
         </Box>
       </Box>
     </Box>

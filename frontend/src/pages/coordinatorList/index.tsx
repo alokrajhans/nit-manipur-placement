@@ -1,9 +1,12 @@
 import React from "react";
-import { Grid, Container, Box } from "@mui/material";
+import { Grid, Container, Box, Button } from "@mui/material";
 import CoordinatorTile from "@/src/components/coordinator";
 import Navbar from "@/src/components/Navbar";
-
+import Link from "next/link";
+import { useRouter } from "next/router";
 export default function Coordinators() {
+    const router = useRouter();
+  
   const data = [
     {
       name: "Alok Raj",
@@ -52,18 +55,35 @@ export default function Coordinators() {
 
   return (
     <Container>
-      <Box>
-        <Navbar />
-      </Box>
-      <Container sx={{ mt: 4 }}>
-        <Grid container spacing={3}>
-          {sortedData.map((coord, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <CoordinatorTile {...coord} />
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
+    <Box>
+      <Navbar />
+    </Box>
+
+    {/* Button below Navbar */}
+    <Button
+        variant="contained"
+        onClick={() => router.push("/interested-students")}
+        sx={{
+          mt:"15px",
+          backgroundColor: "#388e3c",
+          color: "black",
+          "&:hover": {
+            backgroundColor: "#2e7031",
+          },
+        }}
+      >
+        Interested Students List
+      </Button>
+
+    <Container sx={{ mt: 4 }}>
+      <Grid container spacing={3}>
+        {sortedData.map((coord, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <CoordinatorTile {...coord} />
+          </Grid>
+        ))}
+      </Grid>
     </Container>
+  </Container>
   );
 }

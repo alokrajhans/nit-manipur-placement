@@ -16,9 +16,17 @@ import {
   FormHelperText,
 } from "@mui/material";
 
+import {
+  createCompanyVisited,
+  CompanyVisited,
+} from "@/src/service/companyVisited";
+import { createOngoingJob, OngoingJob } from "@/src/service/ongoingJobs";
+
 interface AddJobDialogProps {
-  // Optionally, you can add props here if you want to customize behavior
-  onSubmit?: (data: any) => void; // callback when form submits
+  onSubmit?: (data: {
+    ongoingJob: OngoingJob;
+    companiesVisited: CompanyVisited;
+  }) => void;
 }
 
 const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
@@ -40,6 +48,9 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
   const [packageLPA, setPackageLPA] = useState("");
   const [jobDescriptionLink, setJobDescriptionLink] = useState("");
   const [remarks, setRemarks] = useState("");
+  const [hrContact, setHrContact] = useState("");
+  const [hrMail, setHrMail] = useState("");
+
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleDialogOpen = () => setOpenDialog(true);
@@ -81,37 +92,87 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
     if (!packageLPA) newErrors.packageLPA = "Package is required";
     if (!jobDescriptionLink.trim())
       newErrors.jobDescriptionLink = "Job Description Link is required";
+    if (!hrMail.trim()) newErrors.hrMail = "HR Email is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  const fixDateField = (date?: string): string | undefined => {
+    if (!date) return undefined;
+    // Append time if it's a date-only string
+    return date.length === 10 ? new Date(date + "T00:00:00Z").toISOString() : new Date(date).toISOString();
+  };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validate()) return;
 
-    const formData = {
-      companyName,
-      jobTitle,
-      jobType,
-      branchesEligible,
-      coursesEligible,
-      minCGPA,
-      minClass10,
-      minClass12,
-      deadline,
-      opportunityType,
+    const ongoingJobPayload: Partial<OngoingJob> = {
+      company_name: companyName,
+      job_title: jobTitle,
+      type: jobType,
+      opportunity: opportunityType, // keep typo as per your backend
+      Branch: branchesEligible.join(", "),
+      Course: coursesEligible.join(", "),
+      min_cgpa: Number(minCGPA),
+      class_10th_percentage: Number(minClass10),
+      class_12th_percentage: Number(minClass12),
+      deadline: fixDateField(deadline),
       bond,
-      stipend,
-      packageLPA,
-      jobDescriptionLink,
+      stipend: stipend ? Number(stipend) : undefined,
+      package: packageLPA ? Number(packageLPA) : undefined,
       remarks,
+      date_updated: new Date().toISOString(),
     };
 
-    if (onSubmit) {
-      onSubmit(formData);
-    }
+    const companiesVisitedPayload: Partial<CompanyVisited> = {
+      company_name: companyName,
+      type: jobType,
+      date: new Date().toISOString(),
+      package: packageLPA ? Number(packageLPA) : undefined,
+      offers: 0, // add offers if needed
+      internship: opportunityType.includes("Internship") ? "Yes" : "No",
+      hr_email: hrMail,
+      hr_contact: hrContact,
+      status: "ongoing",
+    };
 
-    handleDialogClose();
+    try {
+      console.log("Sending payload to createOngoingJob", ongoingJobPayload);
+    
+      const [ongoingJobRes, companiesVisitedRes] = await Promise.all([
+        createOngoingJob(ongoingJobPayload),
+        createCompanyVisited(companiesVisitedPayload),
+      ]);
+    
+      if (onSubmit) {
+        onSubmit({
+          ongoingJob: ongoingJobRes,
+          companiesVisited: companiesVisitedRes,
+        });
+      }
+    
+      handleDialogClose();
+      console.log("Job Added!");
+    } catch (error: any) {
+      console.error("❌ Failed to submit job info");
+    
+      if (error.response) {
+        console.error("💥 Response status:", error.response.status);
+        console.error("💥 Response data:", error.response.data);
+    
+        if (error.response.data?.error?.details) {
+          console.error("🛠 Validation issues:");
+          error.response.data.error.details.forEach((detail: any, index: number) => {
+            console.error(`  ${index + 1}. Field: ${detail.path} | Message: ${detail.message}`);
+          });
+        }
+      } else if (error.request) {
+        console.error("❌ No response received:", error.request);
+      } else {
+        console.error("❌ Error:", error.message);
+      }
+    }
+    
   };
 
   return (
@@ -137,6 +198,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
         <DialogContent>
           <Box component="form" sx={{ mt: 2 }}>
             <Grid container spacing={2}>
+              {/* Company Name */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Company Name"
@@ -148,6 +210,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   required
                 />
               </Grid>
+              {/* Job Title */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Job Title"
@@ -159,7 +222,6 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   required
                 />
               </Grid>
-
               {/* Job Type */}
               <Grid item xs={12} sm={6} minWidth={"120px"}>
                 <FormControl fullWidth error={Boolean(errors.jobType)} required>
@@ -176,7 +238,6 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   <FormHelperText>{errors.jobType}</FormHelperText>
                 </FormControl>
               </Grid>
-
               {/* Branch Eligible MultiSelect */}
               <Grid item xs={12} sm={6} minWidth={"180px"}>
                 <FormControl
@@ -206,7 +267,6 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   <FormHelperText>{errors.branchesEligible}</FormHelperText>
                 </FormControl>
               </Grid>
-
               {/* Course Eligible MultiSelect */}
               <Grid item xs={12} sm={6} minWidth={"180px"}>
                 <FormControl
@@ -236,7 +296,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   <FormHelperText>{errors.coursesEligible}</FormHelperText>
                 </FormControl>
               </Grid>
-
+              {/* Min CGPA */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Min CGPA"
@@ -249,6 +309,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   required
                 />
               </Grid>
+              {/* Min Class 10 % */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Min Class 10 %"
@@ -261,6 +322,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   required
                 />
               </Grid>
+              {/* Min Class 12 % */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Min Class 12 %"
@@ -273,6 +335,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   required
                 />
               </Grid>
+              {/* Deadline */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Deadline"
@@ -286,7 +349,6 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   required
                 />
               </Grid>
-
               {/* Opportunity Type */}
               <Grid item xs={12} sm={6} minWidth={"180px"}>
                 <FormControl
@@ -315,7 +377,6 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   <FormHelperText>{errors.opportunityType}</FormHelperText>
                 </FormControl>
               </Grid>
-
               {/* Bond */}
               <Grid item xs={12} sm={6} minWidth={"120px"}>
                 <FormControl fullWidth error={Boolean(errors.bond)} required>
@@ -332,7 +393,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   <FormHelperText>{errors.bond}</FormHelperText>
                 </FormControl>
               </Grid>
-
+              {/* Stipend */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Stipend (if applicable)"
@@ -344,6 +405,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   required
                 />
               </Grid>
+              {/* Package */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Package (LPA)"
@@ -355,7 +417,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   required
                 />
               </Grid>
-
+              {/* Job Description Link */}
               <Grid item xs={12}>
                 <TextField
                   label="Job Description Link"
@@ -367,6 +429,28 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   required
                 />
               </Grid>
+              {/* HR Contact */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="HR Contact"
+                  fullWidth
+                  value={hrContact}
+                  onChange={(e) => setHrContact(e.target.value)}
+                />
+              </Grid>
+              {/* HR Email */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="HR Email"
+                  fullWidth
+                  value={hrMail}
+                  onChange={(e) => setHrMail(e.target.value)}
+                  error={Boolean(errors.hrMail)}
+                  helperText={errors.hrMail}
+                  required
+                />
+              </Grid>
+              {/* Remarks */}
               <Grid item xs={12} minWidth={"500px"}>
                 <TextField
                   label="Remarks"

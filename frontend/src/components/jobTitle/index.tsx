@@ -143,7 +143,15 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
                   </Typography>
                 )}
               </Grid>
-              <Grid item xs={12} sm={6} mt={"8px"} mr={"50px"}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                mt={"8px"}
+                mr={"10px"}
+                maxWidth={"200px"}
+                minWidth={"190px"}
+              >
                 <Typography variant="body2" gutterBottom>
                   <strong>Package:</strong> ₹{pkg} LPA
                 </Typography>
@@ -158,57 +166,64 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
 
           {/* Right: Buttons */}
           <Grid
-            item
-            xs={12}
-            md={3}
+            container
             sx={{
               display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
+              justifyContent: "flex-end",
               alignItems: "center",
-              gap: 1,
-              mr: "50px",
+              gap: 2, // space between icons and button container
+              width: "100%",
+              mt:"-100px"
             }}
           >
-            <Tooltip title="Copy Job Link">
-              <IconButton onClick={handleCopyLink} color="primary">
-                <ContentCopyIcon />
-              </IconButton>
-            </Tooltip>
+            <Grid
+              item
+              xs="auto"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Tooltip title="Copy Job Link">
+                <IconButton onClick={handleCopyLink} color="primary">
+                  <ContentCopyIcon />
+                </IconButton>
+              </Tooltip>
 
-            <Tooltip title="View Job Description">
-              <IconButton onClick={handleViewPDF} color="info">
-                <DescriptionIcon />
-              </IconButton>
-            </Tooltip>
+              <Tooltip title="View Job Description">
+                <IconButton onClick={handleViewPDF} color="info">
+                  <DescriptionIcon />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+
+            <Grid
+              item
+              xs="auto"
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="success"
+                endIcon={<SendIcon />}
+                onClick={handleApply}
+                sx={{
+                  fontSize: "0.8rem",
+                  padding: "4px 10px",
+                  minWidth: "80px",
+                }}
+              >
+                Apply
+              </Button>
+            </Grid>
           </Grid>
-
-          <Grid
-            item
-            xs={12}
-            md={3}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 1,
-            }}
-          ></Grid>
-
-          <Button
-            variant="contained"
-            color="success"
-            endIcon={<SendIcon />}
-            onClick={handleApply}
-            sx={{
-              fontSize: "0.8rem",
-              padding: "4px 10px",
-              minWidth: "80px",
-            }}
-          >
-            Apply
-          </Button>
         </Grid>
       </CardContent>
     </Card>

@@ -15,8 +15,7 @@ const config = {
 };
 
 @lifeCycleObserver('datasource')
-export class MysqlDataSource extends juggler.DataSource
-  implements LifeCycleObserver {
+export class MysqlDataSource extends juggler.DataSource implements LifeCycleObserver {
   static dataSourceName = 'mysql';
 
   constructor(
@@ -26,5 +25,3 @@ export class MysqlDataSource extends juggler.DataSource
     super(dsConfig);
   }
 }
-
-export const datasource = new MysqlDataSource();

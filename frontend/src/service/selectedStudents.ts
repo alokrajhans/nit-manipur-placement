@@ -2,19 +2,20 @@
 import apiClient from "../utils/apiClient";
 
 export interface SelectedStudent {
-  enrollment_number: string;
+  enrollment_number: number;
   full_name: string;
   Branch: string;
   company1?: string;
-  package1?: string;
+  package1?: number;
   type1?: string;
   internship1?: string;
+  offers?: number;
   company2?: string;
-  package2?: string;
+  package2?: number;
   type2?: string;
   internship2?: string;
   company3?: string;
-  package3?: string;
+  package3?: number;
   type3?: string;
   internship3?: string;
 }

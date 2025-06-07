@@ -2,8 +2,16 @@
 import apiClient from "../utils/apiClient";
 
 export interface CompanyVisited {
-  id: number;
-  // Add other fields as per your model
+  id?: number;
+  company_name?: string;
+  type?: string;
+  date?: string; // date as ISO string
+  package?: number;
+  offers?: number;
+  internship?: string;
+  hr_email?: string;
+  hr_contact?: string;
+  status?: string;
 }
 
 export const getCompaniesVisited = async (): Promise<CompanyVisited[]> => {
@@ -16,17 +24,25 @@ export const getCompanyVisitedById = async (id: number): Promise<CompanyVisited>
   return res.data;
 };
 
-export const createCompanyVisited = async (data: Partial<CompanyVisited>): Promise<CompanyVisited> => {
+export const createCompanyVisited = async (
+  data: Partial<CompanyVisited>
+): Promise<CompanyVisited> => {
   const res = await apiClient.post("/companies-visited", data);
   return res.data;
 };
 
-export const updateCompanyVisited = async (id: number, data: Partial<CompanyVisited>): Promise<CompanyVisited> => {
+export const updateCompanyVisited = async (
+  id: number,
+  data: Partial<CompanyVisited>
+): Promise<CompanyVisited> => {
   const res = await apiClient.put(`/companies-visited/${id}`, data);
   return res.data;
 };
 
-export const patchCompanyVisited = async (id: number, data: Partial<CompanyVisited>): Promise<CompanyVisited> => {
+export const patchCompanyVisited = async (
+  id: number,
+  data: Partial<CompanyVisited>
+): Promise<CompanyVisited> => {
   const res = await apiClient.patch(`/companies-visited/${id}`, data);
   return res.data;
 };

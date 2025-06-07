@@ -19,7 +19,7 @@ export class OngoingJobs extends Entity {
   type?: string;
 
   @property({type: 'string'})
-  oppotunity?: string;
+  opportunity?: string;
 
   @property({type: 'string'})
   Branch?: string;
@@ -29,7 +29,8 @@ export class OngoingJobs extends Entity {
 
   @property({type: 'string'})
   remarks?: string;
-
+  @property({type: 'string'})
+  jobDescriptionLink?: string;
   @property({type: 'string'})
   Course?: string;
 
@@ -45,8 +46,8 @@ export class OngoingJobs extends Entity {
   @property({type: 'number'})
   class_10th_percentage?: number;
 
-  @property({type: 'number'})
-  bond?: number;
+  @property({type: 'string'})
+  bond?: string;
 
   @property({type: 'number'})
   stipend?: number;

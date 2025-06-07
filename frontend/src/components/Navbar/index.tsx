@@ -1,17 +1,11 @@
 "use client";
 
 import React from "react";
-import {
-  AppBar,
-  Toolbar,
-
-  Button,
-  Box,
- 
-  
-} from "@mui/material";
+import { AppBar, Toolbar, Button, Box } from "@mui/material";
 import { useRouter } from "next/router";
+import { useCallback } from "react";
 import Image from "next/image";
+import apiClient from "@/src/utils/apiClient";
 
 const Navbar = () => {
   const router = useRouter();
@@ -38,10 +32,21 @@ const Navbar = () => {
 
   // // For errors
   // const [errors, setErrors] = useState<Record<string, string>>({});
+  const handleLogout = useCallback(() => {
+    // Clear token from sessionStorage
+    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("persist:root");
+    localStorage.removeItem("enrollment_number");
+    localStorage.removeItem("role");
 
-  const handleLogout = () => {
-    alert("Logged out");
-  };
+    // Optionally, clear any other auth-related storage (localStorage, cookies, etc.)
+
+    // Redirect to login page (or wherever you want)
+    router.push("/login");
+
+    // Optional: alert or toast
+    // alert("Logged out successfully");
+  }, [router]);
 
   const Logo = () => (
     // <Typography
@@ -172,7 +177,18 @@ const Navbar = () => {
                   transform: "scale(1.03)",
                 },
               }}
-              onClick={() => router.push("/home")}
+              onClick={async () => {
+                try {
+                  // 🔐 Check if token is valid via a protected endpoint
+                  await apiClient.get("/me"); // Replace with your actual endpoint
+
+                  // ✅ If no error, user is authenticated
+                  router.push("/ongoing-jobs");
+                } catch (error) {
+                  console.warn("User not authenticated:", error);
+                  router.push("/login"); // 🚪 redirect to login if not authorized
+                }
+              }}
             >
               Companies
             </Button>
@@ -186,7 +202,19 @@ const Navbar = () => {
                   transform: "scale(1.03)",
                 },
               }}
-              onClick={() => router.push("/companies-visited")}
+              // onClick={() => router.push("/companies-visited")}
+              onClick={async () => {
+                try {
+                  // 🔐 Check if token is valid via a protected endpoint
+                  await apiClient.get("/me"); // Replace with your actual endpoint
+
+                  // ✅ If no error, user is authenticated
+                  router.push("/companies-visited");
+                } catch (error) {
+                  console.warn("User not authenticated:", error);
+                  router.push("/login"); // 🚪 redirect to login if not authorized
+                }
+              }}
             >
               Companies Visited
             </Button>
@@ -199,7 +227,19 @@ const Navbar = () => {
                   transform: "scale(1.03)",
                 },
               }}
-              onClick={() => router.push("/selected-students")}
+              // onClick={() => router.push("/selected-students")}
+              onClick={async () => {
+                try {
+                  // 🔐 Check if token is valid via a protected endpoint
+                  await apiClient.get("/me"); // Replace with your actual endpoint
+
+                  // ✅ If no error, user is authenticated
+                  router.push("/selected-students");
+                } catch (error) {
+                  console.warn("User not authenticated:", error);
+                  router.push("/login"); // 🚪 redirect to login if not authorized
+                }
+              }}
             >
               Selected Students
             </Button>
@@ -212,7 +252,19 @@ const Navbar = () => {
                   transform: "scale(1.03)",
                 },
               }}
-              onClick={() => router.push("/analytics")}
+              // onClick={() => router.push("/analytics")}
+              onClick={async () => {
+                try {
+                  // 🔐 Check if token is valid via a protected endpoint
+                  await apiClient.get("/me"); // Replace with your actual endpoint
+
+                  // ✅ If no error, user is authenticated
+                  router.push("/analytics");
+                } catch (error) {
+                  console.warn("User not authenticated:", error);
+                  router.push("/login"); // 🚪 redirect to login if not authorized
+                }
+              }}
             >
               Analytics
             </Button>
@@ -225,7 +277,19 @@ const Navbar = () => {
                   transform: "scale(1.03)",
                 },
               }}
-              onClick={() => router.push("/coordinatorList")}
+              // onClick={() => router.push("/coordinatorList")}
+              onClick={async () => {
+                try {
+                  // 🔐 Check if token is valid via a protected endpoint
+                  await apiClient.get("/me"); // Replace with your actual endpoint
+
+                  // ✅ If no error, user is authenticated
+                  router.push("/coordinatorList");
+                } catch (error) {
+                  console.warn("User not authenticated:", error);
+                  router.push("/login"); // 🚪 redirect to login if not authorized
+                }
+              }}
             >
               Coordinator List
             </Button>
@@ -238,7 +302,19 @@ const Navbar = () => {
                   transform: "scale(1.03)",
                 },
               }}
-              onClick={() => router.push("/rules")}
+              // onClick={() => router.push("/rules")}
+              onClick={async () => {
+                try {
+                  // 🔐 Check if token is valid via a protected endpoint
+                  await apiClient.get("/me"); // Replace with your actual endpoint
+
+                  // ✅ If no error, user is authenticated
+                  router.push("/rules");
+                } catch (error) {
+                  console.warn("User not authenticated:", error);
+                  router.push("/login"); // 🚪 redirect to login if not authorized
+                }
+              }}
             >
               Rules of Placement
             </Button>
@@ -251,7 +327,19 @@ const Navbar = () => {
                   transform: "scale(1.03)",
                 },
               }}
-              onClick={() => router.push("/myProfile")}
+              // onClick={() => router.push("/myProfile")}
+              onClick={async () => {
+                try {
+                  // 🔐 Check if token is valid via a protected endpoint
+                  await apiClient.get("/me"); // Replace with your actual endpoint
+
+                  // ✅ If no error, user is authenticated
+                  router.push("/myProfile");
+                } catch (error) {
+                  console.warn("User not authenticated:", error);
+                  router.push("/login"); // 🚪 redirect to login if not authorized
+                }
+              }}
             >
               My Profile
             </Button>

@@ -93,7 +93,7 @@ export default function SelectedStudentsPage() {
     allSelectedStudents.forEach((student) => {
       const row: any = {
         Name: student.name,
-        EnrollmentNumber: student.enrollmentNumber,
+        EnrollmentNumber: student.enrollment_number,
         Branch: student.branch,
         NumberOfOffers: student.jobOffers.length,
       };
@@ -179,7 +179,7 @@ export default function SelectedStudentsPage() {
                 {allSelectedStudents.map((student, index) => (
                   <TableRow key={index}>
                     <TableCell>{student.name}</TableCell>
-                    <TableCell>{student.enrollmentNumber}</TableCell>
+                    <TableCell>{student.enrollment_number}</TableCell>
                     <TableCell>{student.branch}</TableCell>
                     <TableCell>{student.jobOffers.length}</TableCell>
 

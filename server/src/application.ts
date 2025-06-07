@@ -19,8 +19,15 @@ import {UserRepository} from './repositories/user.repository'; // ✅ added
 
 // Datasource
 import {MysqlDataSource} from './datasources';
+// import { JWTService } from './service/services/jwt-service';
+// import { AuthController } from './controllers/user.controller';
+import { AuthenticationComponent, registerAuthenticationStrategy } from '@loopback/authentication';
+import { JWTStrategy } from './strategies/jwt-strategies';
+import { JWTService } from './service/jwt-service';
+import { AuthController } from './controllers/auth.controller';
 
 export {ApplicationConfig};
+
 
 export class ServerApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
@@ -48,22 +55,39 @@ export class ServerApplication extends BootMixin(
         extensions: ['.controller.js'],
         nested: true,
       },
+      datasources: {
+        dirs: ['datasources'],         // ✅ Needed
+        extensions: ['.datasource.js'],// ✅ Needed
+        nested: true,
+      },
     };
+    
 
     // Bind datasource
-    this.dataSource(MysqlDataSource);
-
+    this.bind('datasources.MysqlDataSource').toClass(MysqlDataSource); // ✅ fixes it
+    this.dataSource(MysqlDataSource); // keep this too, for default 'mysql' name
+    
     // Bind repositories
     this.repository(CompaniesVisitedRepository);
     this.repository(InterestedStudentsRepository);
     this.repository(OngoingJobsRepository);
     this.repository(SelectedStudentsRepository);
     this.repository(UserRepository); // ✅ added
+    this.bind('services.jwt.service').toClass(JWTService);
+    // this.controller(UserLoginController);
+    this.controller(AuthController);
+    this.component(AuthenticationComponent);
+
+    // Register the JWT authentication strategy
+    registerAuthenticationStrategy(this, JWTStrategy);
+
+
   }
 
   /**
    * Method to auto migrate database schema on app start
    */
+
   async migrateSchema(options?: {existingSchema?: 'drop' | 'alter'}) {
     const ds = await this.get('datasources.mysql') as MysqlDataSource;
 

@@ -22,10 +22,10 @@ export class User extends Entity {
   password: string;
 
   @property({
-    type: 'string',
+    type: 'number',
     required: false,
   })
-  token?: string;
+  role: number;
 
   constructor(data?: Partial<User>) {
     super(data);

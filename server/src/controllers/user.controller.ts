@@ -1,58 +1,55 @@
-import {repository} from '@loopback/repository';
-import {
-  post,
-  requestBody,
-  get,
-  param,
-  HttpErrors,
-} from '@loopback/rest';
-import {User} from '../models';
-import {UserRepository} from '../repositories';
+// import {post, requestBody, HttpErrors} from '@loopback/rest';
+// import {repository} from '@loopback/repository';
+// import {UserRepository} from '../repositories';
+// import {RegisterRequest} from '../dtos/register.dto';
+// import {hash} from 'bcryptjs';
 
-export class UserController {
-  constructor(
-    @repository(UserRepository)
-    public userRepository: UserRepository,
-  ) {}
+// export class UserController {
+//   constructor(
+//     @repository(UserRepository)
+//     public userRepository: UserRepository,
+//   ) {}
 
-  @post('/register')
-  async register(
-    @requestBody() user: Omit<User, 'id' | 'token'>,
-  ): Promise<User> {
-    const exists = await this.userRepository.findOne({
-      where: {enrollment_number: user.enrollment_number},
-    });
-    if (exists) {
-      throw new HttpErrors.BadRequest('Enrollment number already registered.');
-    }
+//   @post('/register')
+//   async register(
+//     @requestBody() newUserRequest: RegisterRequest,
+//   ): Promise<{message: string; userId?: number}> {
+//     const {enrollment_number, password} = newUserRequest;
 
-    return this.userRepository.create(user);
-  }
+//     // Basic validation
+//     if (!enrollment_number?.trim()) {
+//       throw new HttpErrors.BadRequest('Enrollment number is required');
+//     }
+//     if (!password || password.length < 6) {
+//       throw new HttpErrors.BadRequest('Password is required and must be at least 6 characters');
+//     }
 
-  @post('/login')
-  async login(
-    @requestBody() credentials: {enrollment_number: string; password: string},
-  ): Promise<{token: string}> {
-    const user = await this.userRepository.findOne({
-      where: {
-        enrollment_number: credentials.enrollment_number,
-        password: credentials.password,
-      },
-    });
+//     try {
+//       // Check if user already exists
+//       const existingUser = await this.userRepository.findOne({
+//         where: {enrollment_number},
+//       });
 
-    if (!user) {
-      throw new HttpErrors.Unauthorized('Invalid credentials');
-    }
+//       if (existingUser) {
+//         throw new HttpErrors.BadRequest('Enrollment number already registered');
+//       }
 
-    const token = `token-${user.enrollment_number}-${Date.now()}`;
-    await this.userRepository.updateById(user.id!, {...user, token});
-    return {token};
-  }
+//       // Hash password
+//       const hashedPassword = await hash(password, 10);
 
-  @get('/me/{token}')
-  async getProfile(@param.path.string('token') token: string): Promise<User> {
-    const user = await this.userRepository.findOne({where: {token}});
-    if (!user) throw new HttpErrors.NotFound('Invalid or expired token');
-    return user;
-  }
-}
+//       // Create user
+//       const savedUser = await this.userRepository.create({
+//         enrollment_number,
+//         password: hashedPassword,
+//         // email: newUserRequest.email, // optional, if added to DTO/model
+//       });
+
+//       return {
+//         message: 'User registered successfully',
+//         userId: savedUser.id,
+//       };
+//     } catch (error) {
+//       throw error; // You can customize error handling here if needed
+//     }
+//   }
+// }
