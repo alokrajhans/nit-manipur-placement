@@ -208,73 +208,41 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
     >
       <CardContent>
         <Grid container spacing={2}>
-          {/* 4 Columns with 3 items each */}
-          {[
-            {
-              label: "Type",
-              value: `${jobType} | Opportunity: ${opportunityType}`,
-            },
-            {
-              label: "Branches Eligible",
-              value: branchEligible.join(", "),
-            },
-            {
-              label: "Courses Eligible",
-              value: courseEligible.join(", "),
-            },
-            {
-              label: "Min CGPA",
-              value: minCGPA,
-            },
-            {
-              label: "10th % | 12th %",
-              value: `${minClass10}% | ${minClass12}%`,
-            },
-            {
-              label: "Deadline",
-              value: new Date(deadline).toLocaleDateString(),
-            },
-            {
-              label: "Bond",
-              value: bond,
-            },
-            {
-              label: "Stipend",
-              value: stipend ? `₹${stipend}` : null,
-            },
-            {
-              label: "Package",
-              value: `₹${pkg} LPA`,
-            },
-            {
-              label: "Handle By",
-              value: handleBy,
-            },
-            {
-              label: "Backlog",
-              value: backlog,
-            },
-            {
-              label: "Remarks",
-              value: remarks,
-            },
-          ]
-            .filter((item) => item.value !== null)
-            .reduce((acc, curr, index) => {
-              const col = Math.floor(index / 3);
-              if (!acc[col]) acc[col] = [];
-              acc[col].push(curr);
-              return acc;
-            }, [])
-            .map((column, colIndex) => (
-              <Grid item xs={12} sm={6} md={2} key={colIndex}>
-                {column.map((item, idx) => (
-                  <Typography variant="body2" gutterBottom key={idx}>
+          {/* 1st to 4th Columns: Job Info */}
+          {(() => {
+            const data = [
+              { label: "Company & Role", value: `${companyName} - ${jobTitle}` },
+              { label: "Type", value: `${jobType} | Opportunity: ${opportunityType}` },
+              { label: "Branches Eligible", value: branchEligible.join(", ") },
+              { label: "Min CGPA", value: minCGPA },
+              { label: "10th % | 12th %", value: `${minClass10}% | ${minClass12}%` },
+              { label: "Deadline", value: new Date(deadline).toLocaleDateString() },
+              { label: "Bond", value: bond },
+              { label: "Stipend", value: stipend ? `₹${stipend}` : "N/A" },
+              { label: "Package", value: `₹${pkg} LPA` },
+              { label: "Handle By", value: handleBy },
+              { label: "Backlog", value: backlog },
+              { label: "Remarks", value: remarks },
+            ].filter(item => item.value !== null);
+
+            // Manually split into 4 columns, inserting "Courses Eligible" in column 2
+            const columnData = [
+              data.slice(0, 3), // Column 1
+              [data[3], { label: "Courses Eligible", value: courseEligible.join(", ") }, ...data.slice(4, 6)], // Column 2 (5 items)
+              data.slice(6, 9), // Column 3
+              data.slice(9),    // Column 4
+            ];
+
+            return columnData.map((column, idx) => (
+              <Grid item xs={12} sm={6} md={2} key={idx}>
+                {column.map((item, index) => (
+                  <Typography variant="body2" gutterBottom key={index}>
                     <strong>{item.label}:</strong> {item.value}
                   </Typography>
                 ))}
               </Grid>
-            ))}
+            ));
+          })()}
 
           {/* 5th Column: Icons */}
           <Grid item xs={12} sm={6} md={2}>
@@ -304,12 +272,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
 
           {/* 6th Column: Apply Button */}
           <Grid item xs={12} sm={6} md={2}>
-            <Grid
-              container
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-            >
+            <Grid container direction="column" alignItems="center">
               <Grid item>
                 <Button
                   variant="contained"
@@ -355,6 +318,8 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
             </Grid>
           </Grid>
         </Grid>
+
+
 
 
 
