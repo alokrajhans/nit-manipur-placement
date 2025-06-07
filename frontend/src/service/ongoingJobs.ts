@@ -19,6 +19,7 @@ export interface OngoingJob {
   bond?: string;
   stipend?: number;
   handleBy?: string;
+  backlog?: string;
   date_updated?: string; // date as ISO string
 }
 

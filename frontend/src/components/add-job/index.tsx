@@ -14,8 +14,10 @@ import {
   Select,
   MenuItem,
   FormHelperText,
-  Checkbox, ListItemText
+  Checkbox,
+  ListItemText,
 } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
 
 import {
   createCompanyVisited,
@@ -45,6 +47,8 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
   const [deadline, setDeadline] = useState("");
   const [opportunityType, setOpportunityType] = useState("");
   const [bond, setBond] = useState("");
+  const [backlog, setBacklog] = useState("");
+
   const [stipend, setStipend] = useState("");
   const [packageLPA, setPackageLPA] = useState("");
   const [jobDescriptionLink, setJobDescriptionLink] = useState("");
@@ -90,6 +94,8 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
     if (!opportunityType)
       newErrors.opportunityType = "Opportunity Type is required";
     if (!bond) newErrors.bond = "Bond selection is required";
+    if (!backlog) newErrors.backlog = "Baklog selection is required";
+
     if (!stipend) newErrors.stipend = "Stipend is required";
     if (!handleBy) newErrors.handleBy = "Handle By is required";
     if (!packageLPA) newErrors.packageLPA = "Package is required";
@@ -125,6 +131,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
       class_12th_percentage: Number(minClass12),
       deadline: fixDateField(deadline),
       bond,
+      backlog,
       stipend: stipend ? Number(stipend) : undefined,
       package: packageLPA ? Number(packageLPA) : undefined,
       remarks,
@@ -163,19 +170,17 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
       // Optionally display error to user
     }
   };
-  const handleBranchesChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    const value = event.target.value as string[];
-    setBranchesEligible(value);
+  const handleBranchesChange = (event: SelectChangeEvent<string[]>) => {
+    const {
+      target: { value },
+    } = event;
+    setBranchesEligible(typeof value === "string" ? value.split(",") : value);
   };
-  const handleCoursesChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    const value = event.target.value as string[];
-    setCoursesEligible(value);
+
+  const handleCoursesChange = (event: SelectChangeEvent<string[]>) => {
+    const value = event.target.value;
+    setCoursesEligible(typeof value === "string" ? value.split(",") : value);
   };
-    
 
   return (
     <>
@@ -248,13 +253,17 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   error={Boolean(errors.branchesEligible)}
                   required
                 >
-                  <InputLabel id="branch-eligible-label">Branch Eligible</InputLabel>
+                  <InputLabel id="branch-eligible-label">
+                    Branch Eligible
+                  </InputLabel>
                   <Select
                     labelId="branch-eligible-label"
                     multiple
                     value={branchesEligible}
                     onChange={handleBranchesChange}
-                    renderValue={(selected) => (selected as string[]).join(", ")}
+                    renderValue={(selected) =>
+                      (selected as string[]).join(", ")
+                    }
                   >
                     {["CSE", "ECE", "EE", "ME", "CE"].map((branch) => (
                       <MenuItem key={branch} value={branch}>
@@ -267,20 +276,24 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                 </FormControl>
               </Grid>
               {/* Course Eligible */}
-               {/* Course Eligible */}
-               <Grid item xs={12} sm={6} minWidth={"180px"}>
+              {/* Course Eligible */}
+              <Grid item xs={12} sm={6} minWidth={"180px"}>
                 <FormControl
                   fullWidth
                   error={Boolean(errors.coursesEligible)}
                   required
                 >
-                  <InputLabel id="course-eligible-label">Course Eligible</InputLabel>
+                  <InputLabel id="course-eligible-label">
+                    Course Eligible
+                  </InputLabel>
                   <Select
                     labelId="course-eligible-label"
                     multiple
                     value={coursesEligible}
                     onChange={handleCoursesChange}
-                    renderValue={(selected) => (selected as string[]).join(", ")}
+                    renderValue={(selected) =>
+                      (selected as string[]).join(", ")
+                    }
                   >
                     {["B.Tech", "M.Tech", "M.Sc"].map((course) => (
                       <MenuItem key={course} value={course}>
@@ -389,6 +402,23 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   <FormHelperText>{errors.bond}</FormHelperText>
                 </FormControl>
               </Grid>
+              <Grid item xs={12} sm={6} minWidth={"150px"}>
+                <FormControl fullWidth error={Boolean(errors.backlog)} required>
+                  <InputLabel id="backlog-label">Backlog</InputLabel>
+                  <Select
+                    labelId="backlog-label"
+                    value={backlog}
+                    label="backlog"
+                    onChange={(e) => setBacklog(e.target.value)}
+                  >
+                    <MenuItem value="Yes">No History Backlog</MenuItem>
+                    <MenuItem value="No">No Active Backlog</MenuItem>
+                    <MenuItem value="No">No Critera for Backlog</MenuItem>
+                  </Select>
+                  <FormHelperText>{errors.backlog}</FormHelperText>
+                </FormControl>
+              </Grid>
+
               {/* Stipend */}
               <Grid item xs={12} sm={6}>
                 <TextField

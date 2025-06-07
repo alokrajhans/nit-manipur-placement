@@ -39,6 +39,7 @@ type JobBarTileProps = {
   package: string;
   jobId: string;
   jobDescriptionLink: string;
+  backlog:("No Active Backlog" | "No History Backlog" | "No Critera for Backlog") ;
   handleBy: string;
   remarks?: string;
 };
@@ -49,6 +50,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
   branchEligible,
   courseEligible,
   minCGPA,
+  backlog,
   minClass10,
   minClass12,
   deadline,
@@ -83,6 +85,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
       deadline,
       opportunityType,
       bond,
+      backlog,
       stipend,
       package: pkg,
       jobId,
@@ -223,6 +226,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
                   <strong>Branches Eligible:</strong>{" "}
                   {branchEligible.join(", ")}
                 </Typography>
+                
               </Grid>
 
               <Grid item xs={12} sm={6} mt={"8px"}>
@@ -237,6 +241,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
                   <strong>12th %:</strong> {minClass12}%
                 </Typography>
               </Grid>
+              
 
               <Grid item xs={12} sm={6} mt={"8px"}>
                 <Typography variant="body2" gutterBottom>
@@ -247,6 +252,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
                 <Typography variant="body2" gutterBottom>
                   <strong>Bond:</strong> {bond}
                 </Typography>
+               
                 {stipend && (
                   <Typography variant="body2" gutterBottom>
                     <strong>Stipend:</strong> ₹{stipend}
@@ -267,6 +273,9 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
                 </Typography>
                 <Typography variant="body2" gutterBottom>
                   <strong>Handle By:</strong> {handleBy}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                  <strong>Backlog:</strong> {backlog}
                 </Typography>
                 {remarks && (
                   <Typography variant="body2" gutterBottom>

@@ -18,6 +18,16 @@ function mapOpportunityType(opp?: string): "Internship" | "PPO" | "Full time" {
 function mapBond(bond?: string): "Bond" | "No Bond" {
   return bond === "Bond" || bond === "No Bond" ? bond : "No Bond";
 }
+function mapBacklog(backlog?: string): "No Active Backlog" | "No History Backlog" | "No Critera for Backlog" {
+  const allowedBacklogs = ["No Active Backlog", "No History Backlog", "No Critera for Backlog"] as const;
+
+  if (allowedBacklogs.includes(backlog as any)) {
+    return backlog as typeof allowedBacklogs[number];
+  }
+
+  return "No Critera for Backlog"; // default fallback
+}
+
 
 export default function OngoingJobsPage() {
   const [jobs, setJobs] = useState<OngoingJob[]>([]);
@@ -118,6 +128,7 @@ export default function OngoingJobsPage() {
               deadline={job.deadline ?? ""}
               opportunityType={mapOpportunityType(job.opportunity)}
               bond={mapBond(job.bond)}
+              backlog={mapBacklog(job.backlog)}
               stipend={job.stipend?.toString() ?? "0"}
               package={job.package?.toString() ?? "0"}
               jobId={job.id?.toString() ?? ""}
