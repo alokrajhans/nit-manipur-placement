@@ -26,8 +26,8 @@ if (require.main === module) {
   // Run the application with configuration from environment variables or defaults
   const config = {
     rest: {
-      port: +(process.env.PORT ?? 3030),
-      host: process.env.HOST || '127.0.0.1',
+      port: +(process.env.PORT ?? 10000),
+      host: process.env.HOST || '0.0.0.0',
       // The `gracePeriodForClose` provides a graceful close for http/https servers with keep-alive clients.
       gracePeriodForClose: 5000, // 5 seconds
       openApiSpec: {
