@@ -17,6 +17,7 @@ import {
   Checkbox,
   ListItemText,
 } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
 
 import {
   createCompanyVisited,
@@ -169,18 +170,16 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
       // Optionally display error to user
     }
   };
-  const handleBranchesChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    const value = event.target.value as string[];
-    setBranchesEligible(value);
-  };
-  const handleCoursesChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    const value = event.target.value as string[];
-    setCoursesEligible(value);
-  };
+const handleBranchesChange = (event: SelectChangeEvent<string[]>) => {
+  const {
+    target: { value },
+  } = event;
+  setBranchesEligible(typeof value === "string" ? value.split(",") : value);
+};
+const handleCoursesChange = (event: SelectChangeEvent<string[]>) => {
+  const value = event.target.value;
+  setCoursesEligible(typeof value === "string" ? value.split(",") : value);
+};
 
   return (
     <>
