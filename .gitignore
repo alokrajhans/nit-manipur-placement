@@ -12,6 +12,13 @@
 
 # testing
 /coverage
+/frontend/.next
+/frontend/node_modules
+/frontend/.env
+/server/.vscode/
+/server/dist/
+/server/node_modules/
+/server/.env
 
 # next.js
 /.next/

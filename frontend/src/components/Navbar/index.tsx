@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useCallback } from "react";
 import Image from "next/image";
 import apiClient from "@/src/utils/apiClient";
+import Link from "next/link";
 
 const Navbar = () => {
   const router = useRouter();
@@ -60,16 +61,19 @@ const Navbar = () => {
     //   MyLogo
     // </Typography>
     <Box ml={"-15px"} mt={"10px"} mr={"10px"}>
+    <Link href="/" passHref>
       <Image
         src="/logo.png"
         alt="Logo"
         width={40}
         height={40}
         style={{
+          cursor: "pointer",
           filter: "drop-shadow(0 0 2px white)",
         }}
       />
-    </Box>
+    </Link>
+  </Box>
   );
 
   // const handleHover = (event: React.MouseEvent<HTMLElement>) => {
@@ -309,14 +313,14 @@ const Navbar = () => {
                   await apiClient.get("/me"); // Replace with your actual endpoint
 
                   // ✅ If no error, user is authenticated
-                  router.push("/rules");
+                  router.push("/applied-jobs");
                 } catch (error) {
                   console.warn("User not authenticated:", error);
                   router.push("/login"); // 🚪 redirect to login if not authorized
                 }
               }}
             >
-              Rules of Placement
+              Applied Jobs
             </Button>
             <Button
               color="inherit"

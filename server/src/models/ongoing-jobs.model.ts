@@ -33,6 +33,8 @@ export class OngoingJobs extends Entity {
   jobDescriptionLink?: string;
   @property({type: 'string'})
   Course?: string;
+  @property({type: 'string'})
+  handleBy?: string;
 
   @property({type: 'number'})
   min_cgpa?: number;

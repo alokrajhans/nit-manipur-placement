@@ -19,6 +19,7 @@ import {
   SelectedStudent,
   patchSelectedStudent,
 } from "@/src/service/selectedStudents";
+import ShowIfAdmin from "../ShowIfAdmin";
 
 export default function StudentSelection() {
   const [open, setOpen] = useState(false);
@@ -118,6 +119,7 @@ export default function StudentSelection() {
 
   return (
     <>
+    <ShowIfAdmin>
       <Button
         variant="contained"
         onClick={handleOpen}
@@ -131,6 +133,7 @@ export default function StudentSelection() {
       >
         Add Selected Student
       </Button>
+      </ShowIfAdmin>
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>Select Student Details</DialogTitle>

@@ -45,9 +45,9 @@ const RulesOfPlacement: NextPage = () => {
   return (
     <Container>
     <ThemeProvider theme={darkTheme}>
-        <Box>
+        {/* <Box>
             <Navbar/>
-        </Box>
+        </Box> */}
       <CssBaseline />
       <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
         <Paper elevation={3} sx={{ p: 4, backgroundColor: "background.paper" }}>

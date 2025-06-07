@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -17,10 +15,16 @@ import {
 import Navbar from "@/src/components/Navbar";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import { getCompaniesVisited,CompanyVisited } from "@/src/service/companyVisited";
+import {
+  getCompaniesVisited,
+  CompanyVisited,
+} from "@/src/service/companyVisited";
+import ShowIfAdmin from "@/src/components/ShowIfAdmin";
 
 export default function CompaniesVisitedPage() {
-  const [companiesVisited, setCompaniesVisited] = useState<CompanyVisited[]>([]);
+  const [companiesVisited, setCompaniesVisited] = useState<CompanyVisited[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,7 +46,6 @@ export default function CompaniesVisitedPage() {
   }, []);
 
   const handleDownloadExcel = () => {
-    // Convert data to sheet
     const worksheet = XLSX.utils.json_to_sheet(companiesVisited);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Companies");
@@ -61,9 +64,9 @@ export default function CompaniesVisitedPage() {
 
   return (
     <Container>
-      <Box>
+      {/* <Box>
         <Navbar />
-      </Box>
+      </Box> */}
 
       <Box mt={4}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -71,17 +74,19 @@ export default function CompaniesVisitedPage() {
             Companies Visited
           </Typography>
 
-          <Button
-            variant="contained"
-            onClick={handleDownloadExcel}
-            sx={{
-              backgroundColor: "#388e3c",
-              "&:hover": { backgroundColor: "#2e7d32" },
-            }}
-            disabled={loading || companiesVisited.length === 0}
-          >
-            Download as Excel
-          </Button>
+          <ShowIfAdmin>
+            <Button
+              variant="contained"
+              onClick={handleDownloadExcel}
+              sx={{
+                backgroundColor: "#388e3c",
+                "&:hover": { backgroundColor: "#2e7d32" },
+              }}
+              disabled={loading || companiesVisited.length === 0}
+            >
+              Download as Excel
+            </Button>
+          </ShowIfAdmin>
         </Box>
       </Box>
 
@@ -94,7 +99,9 @@ export default function CompaniesVisitedPage() {
         )}
 
         {!loading && !error && companiesVisited.length === 0 && (
-          <Typography sx={{ mt: 2 }}>No companies visited data available.</Typography>
+          <Typography sx={{ mt: 2 }}>
+            No companies visited data available.
+          </Typography>
         )}
 
         {!loading && !error && companiesVisited.length > 0 && (
@@ -108,8 +115,10 @@ export default function CompaniesVisitedPage() {
                   <TableCell>Package (LPA)</TableCell>
                   <TableCell>Offers</TableCell>
                   <TableCell>Internship</TableCell>
-                  <TableCell>HR Email</TableCell>
-                  <TableCell>HR Contact</TableCell>
+                  <ShowIfAdmin>
+                    <TableCell>HR Email</TableCell>
+                    <TableCell>HR Contact</TableCell>
+                  </ShowIfAdmin>
                   {/* <TableCell>Status</TableCell> */}
                 </TableRow>
               </TableHead>
@@ -126,8 +135,10 @@ export default function CompaniesVisitedPage() {
                     <TableCell>{company.package ?? "-"}</TableCell>
                     <TableCell>{company.offers ?? "-"}</TableCell>
                     <TableCell>{company.internship ?? "-"}</TableCell>
-                    <TableCell>{company.hr_email ?? "-"}</TableCell>
-                    <TableCell>{company.hr_contact ?? "-"}</TableCell>
+                    <ShowIfAdmin>
+                      <TableCell>{company.hr_email ?? "-"}</TableCell>
+                      <TableCell>{company.hr_contact ?? "-"}</TableCell>
+                    </ShowIfAdmin>
                     {/* <TableCell>{company.status ?? "-"}</TableCell> */}
                   </TableRow>
                 ))}

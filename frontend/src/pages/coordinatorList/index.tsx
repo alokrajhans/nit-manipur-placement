@@ -4,9 +4,10 @@ import CoordinatorTile from "@/src/components/coordinator";
 import Navbar from "@/src/components/Navbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import ShowIfAdmin from "@/src/components/ShowIfAdmin";
 export default function Coordinators() {
-    const router = useRouter();
-  
+  const router = useRouter();
+
   const data = [
     {
       name: "Alok Raj",
@@ -55,16 +56,18 @@ export default function Coordinators() {
 
   return (
     <Container>
-    <Box>
+      {/* <Box>
       <Navbar />
-    </Box>
+    </Box> */}
 
-    {/* Button below Navbar */}
-    <Button
+      {/* Button below Navbar */}
+      <ShowIfAdmin>
+      <Button
         variant="contained"
         onClick={() => router.push("/interested-students")}
         sx={{
-          mt:"15px",
+          mt: "15px",
+          mr: "15px",
           backgroundColor: "#388e3c",
           color: "black",
           "&:hover": {
@@ -74,16 +77,31 @@ export default function Coordinators() {
       >
         Interested Students List
       </Button>
+      </ShowIfAdmin>
+      {/* <Button
+        variant="contained"
+        onClick={() => router.push("/applied-jobs")}
+        sx={{
+          mt:"15px",
+          backgroundColor: "#388e3c",
+          color: "black",
+          "&:hover": {
+            backgroundColor: "#2e7031",
+          },
+        }}
+      >
+        APPLIED JOBS List
+      </Button> */}
 
-    <Container sx={{ mt: 4 }}>
-      <Grid container spacing={3}>
-        {sortedData.map((coord, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <CoordinatorTile {...coord} />
-          </Grid>
-        ))}
-      </Grid>
+      <Container sx={{ mt: 4 }}>
+        <Grid container spacing={3}>
+          {sortedData.map((coord, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <CoordinatorTile {...coord} />
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     </Container>
-  </Container>
   );
 }

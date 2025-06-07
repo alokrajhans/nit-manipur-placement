@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import AddJobDialog from "@/src/components/add-job";
 import JobBarTile from "@/src/components/jobTitle";
-import Navbar from "@/src/components/Navbar";
-import { Container, Box } from "@mui/material";
+import { Container, Box, Typography } from "@mui/material";
 import { OngoingJob, getOngoingJobs } from "@/src/service/ongoingJobs";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/src/components/hooks";
 
-// Helper functions
+// Helper mappings
 function mapJobType(type?: string): "IT" | "Core" {
   return type === "IT" || type === "Core" ? type : "IT";
 }
@@ -20,7 +19,7 @@ function mapBond(bond?: string): "Bond" | "No Bond" {
   return bond === "Bond" || bond === "No Bond" ? bond : "No Bond";
 }
 
-export default function HomePage() {
+export default function OngoingJobsPage() {
   const [jobs, setJobs] = useState<OngoingJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,12 +33,6 @@ export default function HomePage() {
     const token = typeof window !== "undefined" ? localStorage.getItem("jwtToken") : null;
     const localRole = typeof window !== "undefined" ? localStorage.getItem("role") : null;
 
-    // Redirect to login if token or user info missing
-    // if (!token || role === null || enrollment_number === null) {
-    //   router.replace("/login");
-    //   return;
-    // }
-
     if (localRole) {
       setRoleD(Number(localRole));
     }
@@ -50,7 +43,15 @@ export default function HomePage() {
       try {
         setLoading(true);
         const jobsList = await getOngoingJobs();
-        setJobs(jobsList);
+
+        // Sort by date_updated (most recent first)
+        const sortedJobs = jobsList.sort((a, b) => {
+          const dateA = new Date(a.date_updated ?? "").getTime();
+          const dateB = new Date(b.date_updated ?? "").getTime();
+          return dateB - dateA;
+        });
+
+        setJobs(sortedJobs);
       } catch (err) {
         setError("Failed to load jobs");
         console.error(err);
@@ -63,27 +64,25 @@ export default function HomePage() {
   }, [router, role, enrollment_number]);
 
   if (checkingAuth) {
-    return <p>Checking authentication...</p>;
+    return <Typography>Checking authentication...</Typography>;
   }
 
-  const showAddJob = role !== 2  && (roleD === 0 || roleD === 1);
+  const showAddJob = role !== 2 && (roleD === 0 || roleD === 1);
 
   return (
     <Container>
-      <Box>
-        <Navbar />
-      </Box>
-
       {showAddJob && (
-        <Box mt="10px">
+        <Box mt={2}>
           <AddJobDialog />
         </Box>
       )}
 
-      <Box sx={{ mt: "10px" }}>
-        {loading && <p>Loading jobs...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {!loading && !error && jobs.length === 0 && <p>No jobs available.</p>}
+      <Box mt={3}>
+        {loading && <Typography>Loading jobs...</Typography>}
+        {error && <Typography color="error">{error}</Typography>}
+        {!loading && !error && jobs.length === 0 && (
+          <Typography>No jobs available.</Typography>
+        )}
 
         {!loading &&
           !error &&
@@ -124,6 +123,7 @@ export default function HomePage() {
               jobId={job.id?.toString() ?? ""}
               jobDescriptionLink={job.jobDescriptionLink ?? ""}
               remarks={job.remarks ?? ""}
+              handleBy={job.handleBy ?? ""}
             />
           ))}
       </Box>

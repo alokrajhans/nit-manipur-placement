@@ -19,6 +19,7 @@ import * as XLSX from "xlsx";
 import Navbar from "@/src/components/Navbar";
 import StudentSelection from "@/src/components/studentSelection";
 import { getSelectedStudents, SelectedStudent } from "@/src/service/selectedStudents";
+import ShowIfAdmin from "@/src/components/ShowIfAdmin";
 
 interface JobOffer {
   companyName: string;
@@ -133,9 +134,9 @@ export default function SelectedStudentsPage() {
 
   return (
     <Container>
-      <Box>
+      {/* <Box>
         <Navbar />
-      </Box>
+      </Box> */}
 
       <Box mt={4}>
         <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={2}>
@@ -143,6 +144,7 @@ export default function SelectedStudentsPage() {
             Selected Students
           </Typography>
           <Box><StudentSelection /></Box>
+          <ShowIfAdmin>
           <Button
             variant="contained"
             sx={{
@@ -153,6 +155,7 @@ export default function SelectedStudentsPage() {
           >
             Download AS Excel
           </Button>
+          </ShowIfAdmin>
         </Box>
 
         <Box sx={{ overflowX: "auto", width: "100%" }}>

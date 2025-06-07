@@ -14,6 +14,7 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  Checkbox, ListItemText
 } from "@mui/material";
 
 import {
@@ -50,6 +51,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
   const [remarks, setRemarks] = useState("");
   const [hrContact, setHrContact] = useState("");
   const [hrMail, setHrMail] = useState("");
+  const [handleBy, setHandleBy] = useState("");
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -59,17 +61,17 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
     setErrors({});
   };
 
-  const handleBranchesChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    setBranchesEligible(event.target.value as string[]);
-  };
+  // const handleBranchesChange = (
+  //   event: React.ChangeEvent<{ value: unknown }>
+  // ) => {
+  //   setBranchesEligible(event.target.value as string[]);
+  // };
 
-  const handleCoursesChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    setCoursesEligible(event.target.value as string[]);
-  };
+  // const handleCoursesChange = (
+  //   event: React.ChangeEvent<{ value: unknown }>
+  // ) => {
+  //   setCoursesEligible(event.target.value as string[]);
+  // };
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -89,6 +91,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
       newErrors.opportunityType = "Opportunity Type is required";
     if (!bond) newErrors.bond = "Bond selection is required";
     if (!stipend) newErrors.stipend = "Stipend is required";
+    if (!handleBy) newErrors.handleBy = "Handle By is required";
     if (!packageLPA) newErrors.packageLPA = "Package is required";
     if (!jobDescriptionLink.trim())
       newErrors.jobDescriptionLink = "Job Description Link is required";
@@ -97,10 +100,13 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
   const fixDateField = (date?: string): string | undefined => {
     if (!date) return undefined;
     // Append time if it's a date-only string
-    return date.length === 10 ? new Date(date + "T00:00:00Z").toISOString() : new Date(date).toISOString();
+    return date.length === 10
+      ? new Date(date + "T00:00:00Z").toISOString()
+      : new Date(date).toISOString();
   };
 
   const handleSubmit = async () => {
@@ -110,7 +116,8 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
       company_name: companyName,
       job_title: jobTitle,
       type: jobType,
-      opportunity: opportunityType, // keep typo as per your backend
+      handleBy: handleBy,
+      opportunity: opportunityType, // typo kept as per backend
       Branch: branchesEligible.join(", "),
       Course: coursesEligible.join(", "),
       min_cgpa: Number(minCGPA),
@@ -129,7 +136,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
       type: jobType,
       date: new Date().toISOString(),
       package: packageLPA ? Number(packageLPA) : undefined,
-      offers: 0, // add offers if needed
+      offers: 0,
       internship: opportunityType.includes("Internship") ? "Yes" : "No",
       hr_email: hrMail,
       hr_contact: hrContact,
@@ -137,43 +144,38 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
     };
 
     try {
-      console.log("Sending payload to createOngoingJob", ongoingJobPayload);
-    
       const [ongoingJobRes, companiesVisitedRes] = await Promise.all([
         createOngoingJob(ongoingJobPayload),
         createCompanyVisited(companiesVisitedPayload),
       ]);
-    
+
       if (onSubmit) {
         onSubmit({
           ongoingJob: ongoingJobRes,
           companiesVisited: companiesVisitedRes,
         });
       }
-    
+
       handleDialogClose();
-      console.log("Job Added!");
+      // Optionally show toast or snackbar here
     } catch (error: any) {
-      console.error("❌ Failed to submit job info");
-    
-      if (error.response) {
-        console.error("💥 Response status:", error.response.status);
-        console.error("💥 Response data:", error.response.data);
-    
-        if (error.response.data?.error?.details) {
-          console.error("🛠 Validation issues:");
-          error.response.data.error.details.forEach((detail: any, index: number) => {
-            console.error(`  ${index + 1}. Field: ${detail.path} | Message: ${detail.message}`);
-          });
-        }
-      } else if (error.request) {
-        console.error("❌ No response received:", error.request);
-      } else {
-        console.error("❌ Error:", error.message);
-      }
+      console.error("❌ Failed to submit job info:", error);
+      // Optionally display error to user
     }
-    
   };
+  const handleBranchesChange = (
+    event: React.ChangeEvent<{ value: unknown }>
+  ) => {
+    const value = event.target.value as string[];
+    setBranchesEligible(value);
+  };
+  const handleCoursesChange = (
+    event: React.ChangeEvent<{ value: unknown }>
+  ) => {
+    const value = event.target.value as string[];
+    setCoursesEligible(value);
+  };
+    
 
   return (
     <>
@@ -238,58 +240,52 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   <FormHelperText>{errors.jobType}</FormHelperText>
                 </FormControl>
               </Grid>
-              {/* Branch Eligible MultiSelect */}
+              {/* Branch Eligible */}
+              {/* Branch Eligible */}
               <Grid item xs={12} sm={6} minWidth={"180px"}>
                 <FormControl
                   fullWidth
                   error={Boolean(errors.branchesEligible)}
                   required
                 >
-                  <InputLabel id="branch-eligible-label">
-                    Branch Eligible
-                  </InputLabel>
+                  <InputLabel id="branch-eligible-label">Branch Eligible</InputLabel>
                   <Select
                     labelId="branch-eligible-label"
                     multiple
                     value={branchesEligible}
                     onChange={handleBranchesChange}
-                    label="Branch Eligible"
-                    renderValue={(selected) =>
-                      (selected as string[]).join(", ")
-                    }
+                    renderValue={(selected) => (selected as string[]).join(", ")}
                   >
                     {["CSE", "ECE", "EE", "ME", "CE"].map((branch) => (
                       <MenuItem key={branch} value={branch}>
-                        {branch}
+                        <Checkbox checked={branchesEligible.includes(branch)} />
+                        <ListItemText primary={branch} />
                       </MenuItem>
                     ))}
                   </Select>
                   <FormHelperText>{errors.branchesEligible}</FormHelperText>
                 </FormControl>
               </Grid>
-              {/* Course Eligible MultiSelect */}
-              <Grid item xs={12} sm={6} minWidth={"180px"}>
+              {/* Course Eligible */}
+               {/* Course Eligible */}
+               <Grid item xs={12} sm={6} minWidth={"180px"}>
                 <FormControl
                   fullWidth
                   error={Boolean(errors.coursesEligible)}
                   required
                 >
-                  <InputLabel id="course-eligible-label">
-                    Course Eligible
-                  </InputLabel>
+                  <InputLabel id="course-eligible-label">Course Eligible</InputLabel>
                   <Select
                     labelId="course-eligible-label"
                     multiple
                     value={coursesEligible}
                     onChange={handleCoursesChange}
-                    label="Course Eligible"
-                    renderValue={(selected) =>
-                      (selected as string[]).join(", ")
-                    }
+                    renderValue={(selected) => (selected as string[]).join(", ")}
                   >
                     {["B.Tech", "M.Tech", "M.Sc"].map((course) => (
                       <MenuItem key={course} value={course}>
-                        {course}
+                        <Checkbox checked={coursesEligible.includes(course)} />
+                        <ListItemText primary={course} />
                       </MenuItem>
                     ))}
                   </Select>
@@ -450,6 +446,18 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                   required
                 />
               </Grid>
+              {/* Handle By */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Handle By"
+                  fullWidth
+                  value={handleBy}
+                  onChange={(e) => setHandleBy(e.target.value)}
+                  error={Boolean(errors.handleBy)}
+                  helperText={errors.handleBy}
+                  required
+                />
+              </Grid>
               {/* Remarks */}
               <Grid item xs={12} minWidth={"500px"}>
                 <TextField
@@ -466,10 +474,30 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
         </DialogContent>
 
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button variant="outlined" color="error" onClick={handleDialogClose}>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#388e3c",
+              color: "black",
+              "&:hover": {
+                backgroundColor: "#2e7031",
+              },
+            }}
+            onClick={handleDialogClose}
+          >
             Close
           </Button>
-          <Button variant="contained" onClick={handleSubmit}>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            sx={{
+              backgroundColor: "#388e3c",
+              color: "black",
+              "&:hover": {
+                backgroundColor: "#2e7031",
+              },
+            }}
+          >
             Submit
           </Button>
         </DialogActions>

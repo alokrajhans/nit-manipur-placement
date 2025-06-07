@@ -76,9 +76,9 @@ export default function InterestedStudentsPage() {
 
   return (
     <Container>
-      <Box>
+      {/* <Box>
         <Navbar />
-      </Box>
+      </Box> */}
 
       <Box mt={4}>
         <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={2}>

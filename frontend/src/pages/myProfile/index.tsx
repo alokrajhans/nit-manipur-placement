@@ -182,9 +182,9 @@ export default function MyProfile() {
 
   return (
     <Container>
-      <Box>
+      {/* <Box>
         <Navbar />
-      </Box>
+      </Box> */}
       <Box sx={{ p: 3 }}>
         <Paper elevation={3} sx={{ p: 4, backgroundColor: "#1e1e1e", color: "#fff" }}>
           <Typography variant="h5" gutterBottom>

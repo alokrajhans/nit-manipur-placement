@@ -25,6 +25,8 @@ import { AuthenticationComponent, registerAuthenticationStrategy } from '@loopba
 import { JWTStrategy } from './strategies/jwt-strategies';
 import { JWTService } from './service/jwt-service';
 import { AuthController } from './controllers/auth.controller';
+import { AppliedJobsRepository } from './repositories/applied-jobs.repository';
+import { AppliedJobsController } from './controllers/applied-jobs.controllers';
 
 export {ApplicationConfig};
 
@@ -69,6 +71,7 @@ export class ServerApplication extends BootMixin(
     
     // Bind repositories
     this.repository(CompaniesVisitedRepository);
+    this.repository(AppliedJobsRepository);
     this.repository(InterestedStudentsRepository);
     this.repository(OngoingJobsRepository);
     this.repository(SelectedStudentsRepository);
@@ -77,6 +80,8 @@ export class ServerApplication extends BootMixin(
     // this.controller(UserLoginController);
     this.controller(AuthController);
     this.component(AuthenticationComponent);
+
+    this.controller(AppliedJobsController);
 
     // Register the JWT authentication strategy
     registerAuthenticationStrategy(this, JWTStrategy);

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,7 +14,15 @@ import {
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DescriptionIcon from "@mui/icons-material/Description";
 import SendIcon from "@mui/icons-material/Send";
+import {
+  AppliedJob,
+  createAppliedJob,
+  getAllAppliedJobs,
+} from "@/src/service/appliedJobs";
+import { getInterestedStudentByEnrollment } from "@/src/service/interestedStudents";
 
+
+// const [alreadyApplied, setAlreadyApplied] = useState(false);
 type JobBarTileProps = {
   companyName: string;
   jobTitle: string;
@@ -31,9 +39,9 @@ type JobBarTileProps = {
   package: string;
   jobId: string;
   jobDescriptionLink: string;
+  handleBy: string;
   remarks?: string;
 };
-
 const JobBarTile: React.FC<JobBarTileProps> = ({
   companyName,
   jobTitle,
@@ -50,39 +58,139 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
   package: pkg,
   jobId,
   jobDescriptionLink,
+  handleBy,
   remarks,
 }) => {
+  const [alreadyApplied, setAlreadyApplied] = useState(false);
+  const [studentFound, setStudentFound] = useState<boolean | null>(null); // ✅ move here
+  const alertShownRef = useRef(false);
+
+
   const jobLink = `${
     typeof window !== "undefined" ? window.location.origin : ""
   }/jobs/${jobId}`;
 
-  const handleCopyLink = async () => {
+  const handleCopyJSON = async () => {
+    const jobData = {
+      companyName,
+      jobTitle,
+      jobType,
+      branchEligible,
+      courseEligible,
+      minCGPA,
+      minClass10,
+      minClass12,
+      deadline,
+      opportunityType,
+      bond,
+      stipend,
+      package: pkg,
+      jobId,
+      jobDescriptionLink,
+      handleBy,
+      remarks,
+    };
+
     try {
-      await navigator.clipboard.writeText(jobLink);
-      alert("Job link copied to clipboard!");
+      await navigator.clipboard.writeText(JSON.stringify(jobData, null, 2));
+      alert("Job data copied!");
     } catch {
-      alert("Failed to copy link.");
+      alert("Failed to copy job data.");
     }
   };
 
   const handleViewPDF = () => {
     window.open(jobDescriptionLink, "_blank");
   };
+  useEffect(() => {
+    const checkApplied = async () => {
+      const enrollmentNumber =
+        typeof window !== "undefined"
+          ? localStorage.getItem("enrollment_number")
+          : null;
+
+      if (!enrollmentNumber) {
+        setStudentFound(false);
+        return;
+      }
+
+      try {
+        // Check if user is interested student
+        try {
+          const res = await getInterestedStudentByEnrollment(Number(enrollmentNumber));
+          if (res) {
+            setStudentFound(true);
+          } else {
+           
+            setStudentFound(false);
+          }
+          
+          console.log("222",res);
+          console.log("111",studentFound);
+        } catch (error) {
+          console.error("Error fetching interested student", error);
+          setStudentFound(false);
+        }
+        
+        
+
+        // Check if already applied
+        const appliedJobs = await getAllAppliedJobs();
+        const hasApplied = appliedJobs.some(
+          (job) =>
+            job.enrollment_number === enrollmentNumber &&
+            job.company_name === companyName
+        );
+        setAlreadyApplied(hasApplied);
+      } catch (error) {
+        console.error("Error checking applied status", error);
+        setStudentFound(false);
+      }
+    };
+
+    checkApplied();
+  }, [companyName]);
 
   const handleApply = async () => {
+    if (alreadyApplied || !studentFound) return;
+
+    const enrollmentNumber =
+      typeof window !== "undefined"
+        ? localStorage.getItem("enrollment_number")
+        : null;
+
+    if (!enrollmentNumber) {
+      alert("Enrollment number missing. Please log in again.");
+      return;
+    }
+
+    const applyJobPayload: Partial<AppliedJob> = {
+      company_name: companyName,
+      enrollment_number: enrollmentNumber,
+    };
+
     try {
-      const res = await fetch(`/api/jobs/${jobId}/apply`, {
-        method: "POST",
-      });
-
-      if (!res.ok) throw new Error("Failed to apply");
-
+      await createAppliedJob(applyJobPayload);
       alert("Application submitted!");
+      setAlreadyApplied(true);
     } catch {
       alert("Error while applying.");
     }
   };
-
+  useEffect(() => {
+    if (
+      studentFound === false &&
+      !alertShownRef.current &&
+      typeof window !== "undefined" &&
+      !(window as any).__alertShownThisLoad
+    ) {
+      alert("Please fill your details in My Profile section!");
+      alertShownRef.current = true;
+      (window as any).__alertShownThisLoad = true;
+    }
+  }, [studentFound]);
+  
+  
   return (
     <Card
       sx={{
@@ -132,8 +240,10 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
 
               <Grid item xs={12} sm={6} mt={"8px"}>
                 <Typography variant="body2" gutterBottom>
-                  <strong>Deadline:</strong> {deadline}
+                  <strong>Deadline:</strong>{" "}
+                  {new Date(deadline).toLocaleDateString()}
                 </Typography>
+
                 <Typography variant="body2" gutterBottom>
                   <strong>Bond:</strong> {bond}
                 </Typography>
@@ -155,6 +265,9 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
                 <Typography variant="body2" gutterBottom>
                   <strong>Package:</strong> ₹{pkg} LPA
                 </Typography>
+                <Typography variant="body2" gutterBottom>
+                  <strong>Handle By:</strong> {handleBy}
+                </Typography>
                 {remarks && (
                   <Typography variant="body2" gutterBottom>
                     <strong>Remarks:</strong> {remarks}
@@ -173,7 +286,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
               alignItems: "center",
               gap: 2, // space between icons and button container
               width: "100%",
-              mt:"-100px"
+              mt: "-100px",
             }}
           >
             <Grid
@@ -188,7 +301,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
               }}
             >
               <Tooltip title="Copy Job Link">
-                <IconButton onClick={handleCopyLink} color="primary">
+                <IconButton onClick={handleCopyJSON} color="primary">
                   <ContentCopyIcon />
                 </IconButton>
               </Tooltip>
@@ -200,27 +313,46 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
               </Tooltip>
             </Grid>
 
-            <Grid
-              item
-              xs="auto"
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
+            <Grid item xs="auto">
               <Button
                 variant="contained"
-                color="success"
-                endIcon={<SendIcon />}
+                disabled={alreadyApplied || studentFound === false}
                 onClick={handleApply}
+                endIcon={<SendIcon />}
                 sx={{
                   fontSize: "0.8rem",
                   padding: "4px 10px",
                   minWidth: "80px",
+                  backgroundColor:
+                    alreadyApplied || studentFound === false
+                      ? "#d3d3d3"
+                      : "success.main",
+                  color:
+                    alreadyApplied || studentFound === false ? "#000" : "#fff",
+                  cursor:
+                    alreadyApplied || studentFound === false
+                      ? "not-allowed"
+                      : "pointer",
+                  "&:hover": {
+                    backgroundColor:
+                      alreadyApplied || studentFound === false
+                        ? "#d3d3d3"
+                        : "success.dark",
+                  },
                 }}
+                title={
+                  studentFound === false
+                    ? "You must be an interested student to apply"
+                    : alreadyApplied
+                    ? "You have already applied"
+                    : ""
+                }
               >
-                Apply
+                {alreadyApplied
+                  ? "Applied"
+                  : studentFound === false
+                  ? "My Profile not filled"
+                  : "Apply"}
               </Button>
             </Grid>
           </Grid>

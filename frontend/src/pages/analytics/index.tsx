@@ -74,9 +74,9 @@ export default function AnalyticsPage() {
 
   return (
     <Container>
-      <Box>
+      {/* <Box>
         <Navbar />
-      </Box>
+      </Box> */}
       <Grid container spacing={4} mt={4}>
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 2, backgroundColor: "#1e1e1e", color: "#fff" }}>
