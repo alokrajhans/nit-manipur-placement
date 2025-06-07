@@ -286,7 +286,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
               spacing={2}
             >
               <Grid item>
-                <Tooltip title="Copy Job Link">
+                <Tooltip title="Copy Job Data">
                   <IconButton onClick={handleCopyJSON} color="primary">
                     <ContentCopyIcon />
                   </IconButton>
