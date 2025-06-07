@@ -288,7 +288,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
                         ? "#d3d3d3"
                         : "success.main",
                     color:
-                      alreadyApplied || studentFound === false ? "#000" : "#fff",
+                      alreadyApplied || studentFound === false ? "#black" : "fff",
                     cursor:
                       alreadyApplied || studentFound === false
                         ? "not-allowed"
