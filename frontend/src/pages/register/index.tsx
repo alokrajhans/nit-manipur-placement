@@ -5,6 +5,7 @@ import { Button, TextField, Typography, Box } from "@mui/material";
 import Image from "next/image";
 import zxcvbn from "zxcvbn";
 import { registerUser } from "@/src/service/auth";
+import Link from "next/link";
 
 export default function RegisterPage() {
   const [roll, setRoll] = useState("");
@@ -102,7 +103,7 @@ export default function RegisterPage() {
               boxShadow: "0 0 8px 2px rgba(255, 255, 255, 0.45)",
               borderRadius: 1,
               mx: 30,
-              mr:10,
+              mr: 10,
             }}
           />
         </Box>
@@ -182,6 +183,25 @@ export default function RegisterPage() {
               Register
             </Button>
           </Box>
+          <Typography
+            variant="body2"
+            align="center"
+            sx={{ mt: 1, color: "white" }}
+          >
+            Already Have Account?{" "}
+            <Link href="/login" passHref legacyBehavior>
+              <a
+                style={{
+                  color: "#388e3c",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                  fontSize: "18px",
+                }}
+              >
+                Login here
+              </a>
+            </Link>
+          </Typography>
         </Box>
       </Box>
     </Box>
