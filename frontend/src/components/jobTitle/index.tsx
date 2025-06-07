@@ -39,7 +39,7 @@ type JobBarTileProps = {
   package: string;
   jobId: string;
   jobDescriptionLink: string;
-  backlog:("No Active Backlog" | "No History Backlog" | "No Critera for Backlog") ;
+  backlog: ("No Active Backlog" | "No History Backlog" | "No Critera for Backlog");
   handleBy: string;
   remarks?: string;
 };
@@ -68,9 +68,8 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
   const alertShownRef = useRef(false);
 
 
-  const jobLink = `${
-    typeof window !== "undefined" ? window.location.origin : ""
-  }/jobs/${jobId}`;
+  const jobLink = `${typeof window !== "undefined" ? window.location.origin : ""
+    }/jobs/${jobId}`;
 
   const handleCopyJSON = async () => {
     const jobData = {
@@ -124,18 +123,18 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
           if (res) {
             setStudentFound(true);
           } else {
-           
+
             setStudentFound(false);
           }
-          
+
           // console.log("222",res);
           // console.log("111",studentFound);
         } catch (error) {
           // console.error("Error fetching interested student", error);
           setStudentFound(false);
         }
-        
-        
+
+
 
         // Check if already applied
         const appliedJobs = await getAllAppliedJobs();
@@ -192,8 +191,8 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
       (window as any).__alertShownThisLoad = true;
     }
   }, [studentFound]);
-  
-  
+
+
   return (
     <Card
       sx={{
@@ -209,163 +208,156 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
     >
       <CardContent>
         <Grid container spacing={2}>
-          {/* Left content */}
-          <Grid item xs={12} md={9}>
-            <Grid container spacing={2}>
-              {/* First Column */}
-              {/* <Grid item xs={12} sm={6} mr={"90px"}> */}
-              <Grid item xs={12} sm={6} ml={"10px"}>
-                <Typography variant="h6" gutterBottom>
-                  {companyName} - {jobTitle}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Type:</strong> {jobType} |{" "}
-                  <strong>Opportunity:</strong> {opportunityType}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Branches Eligible:</strong>{" "}
-                  {branchEligible.join(", ")}
-                </Typography>
-                
-              </Grid>
-
-              <Grid item xs={12} sm={6} mt={"8px"}>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Courses Eligible:</strong> {courseEligible.join(", ")}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Min CGPA:</strong> {minCGPA}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>10th %:</strong> {minClass10}% |{" "}
-                  <strong>12th %:</strong> {minClass12}%
-                </Typography>
-              </Grid>
-              
-
-              <Grid item xs={12} sm={6} mt={"8px"}>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Deadline:</strong>{" "}
-                  {new Date(deadline).toLocaleDateString()}
-                </Typography>
-
-                <Typography variant="body2" gutterBottom>
-                  <strong>Bond:</strong> {bond}
-                </Typography>
-               
-                {stipend && (
-                  <Typography variant="body2" gutterBottom>
-                    <strong>Stipend:</strong> ₹{stipend}
+          {/* 4 Columns with 3 items each */}
+          {[
+            {
+              label: "Type",
+              value: `${jobType} | Opportunity: ${opportunityType}`,
+            },
+            {
+              label: "Branches Eligible",
+              value: branchEligible.join(", "),
+            },
+            {
+              label: "Courses Eligible",
+              value: courseEligible.join(", "),
+            },
+            {
+              label: "Min CGPA",
+              value: minCGPA,
+            },
+            {
+              label: "10th % | 12th %",
+              value: `${minClass10}% | ${minClass12}%`,
+            },
+            {
+              label: "Deadline",
+              value: new Date(deadline).toLocaleDateString(),
+            },
+            {
+              label: "Bond",
+              value: bond,
+            },
+            {
+              label: "Stipend",
+              value: stipend ? `₹${stipend}` : null,
+            },
+            {
+              label: "Package",
+              value: `₹${pkg} LPA`,
+            },
+            {
+              label: "Handle By",
+              value: handleBy,
+            },
+            {
+              label: "Backlog",
+              value: backlog,
+            },
+            {
+              label: "Remarks",
+              value: remarks,
+            },
+          ]
+            .filter((item) => item.value !== null)
+            .reduce((acc, curr, index) => {
+              const col = Math.floor(index / 3);
+              if (!acc[col]) acc[col] = [];
+              acc[col].push(curr);
+              return acc;
+            }, [])
+            .map((column, colIndex) => (
+              <Grid item xs={12} sm={6} md={2} key={colIndex}>
+                {column.map((item, idx) => (
+                  <Typography variant="body2" gutterBottom key={idx}>
+                    <strong>{item.label}:</strong> {item.value}
                   </Typography>
-                )}
+                ))}
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                mt={"8px"}
-                mr={"10px"}
-                maxWidth={"200px"}
-                minWidth={"190px"}
-              >
-                <Typography variant="body2" gutterBottom>
-                  <strong>Package:</strong> ₹{pkg} LPA
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Handle By:</strong> {handleBy}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Backlog:</strong> {backlog}
-                </Typography>
-                {remarks && (
-                  <Typography variant="body2" gutterBottom>
-                    <strong>Remarks:</strong> {remarks}
-                  </Typography>
-                )}
+            ))}
+
+          {/* 5th Column: Icons */}
+          <Grid item xs={12} sm={6} md={2}>
+            <Grid
+              container
+              direction="column"
+              justifyContent="flex-start"
+              alignItems="center"
+              spacing={2}
+            >
+              <Grid item>
+                <Tooltip title="Copy Job Link">
+                  <IconButton onClick={handleCopyJSON} color="primary">
+                    <ContentCopyIcon />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+              <Grid item>
+                <Tooltip title="View Job Description">
+                  <IconButton onClick={handleViewPDF} color="info">
+                    <DescriptionIcon />
+                  </IconButton>
+                </Tooltip>
               </Grid>
             </Grid>
           </Grid>
 
-          {/* Right: Buttons */}
-          <Grid
-            container
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: 2, // space between icons and button container
-              width: "100%",
-              mt: "-100px",
-            }}
-          >
+          {/* 6th Column: Apply Button */}
+          <Grid item xs={12} sm={6} md={2}>
             <Grid
-              item
-              xs="auto"
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 1,
-              }}
+              container
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
             >
-              <Tooltip title="Copy Job Link">
-                <IconButton onClick={handleCopyJSON} color="primary">
-                  <ContentCopyIcon />
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title="View Job Description">
-                <IconButton onClick={handleViewPDF} color="info">
-                  <DescriptionIcon />
-                </IconButton>
-              </Tooltip>
-            </Grid>
-
-            <Grid item xs="auto">
-              <Button
-                variant="contained"
-                disabled={alreadyApplied || studentFound === false}
-                onClick={handleApply}
-                endIcon={<SendIcon />}
-                sx={{
-                  fontSize: "0.8rem",
-                  padding: "4px 10px",
-                  minWidth: "80px",
-                  backgroundColor:
-                    alreadyApplied || studentFound === false
-                      ? "#d3d3d3"
-                      : "success.main",
-                  color:
-                    alreadyApplied || studentFound === false ? "#000" : "#fff",
-                  cursor:
-                    alreadyApplied || studentFound === false
-                      ? "not-allowed"
-                      : "pointer",
-                  "&:hover": {
+              <Grid item>
+                <Button
+                  variant="contained"
+                  disabled={alreadyApplied || studentFound === false}
+                  onClick={handleApply}
+                  endIcon={<SendIcon />}
+                  sx={{
+                    fontSize: "0.8rem",
+                    padding: "4px 10px",
+                    minWidth: "80px",
                     backgroundColor:
                       alreadyApplied || studentFound === false
                         ? "#d3d3d3"
-                        : "success.dark",
-                  },
-                }}
-                title={
-                  studentFound === false
-                    ? "You must be an interested student to apply"
-                    : alreadyApplied
-                    ? "You have already applied"
-                    : ""
-                }
-              >
-                {alreadyApplied
-                  ? "Applied"
-                  : studentFound === false
-                  ? "My Profile not filled"
-                  : "Apply"}
-              </Button>
+                        : "success.main",
+                    color:
+                      alreadyApplied || studentFound === false ? "#000" : "#fff",
+                    cursor:
+                      alreadyApplied || studentFound === false
+                        ? "not-allowed"
+                        : "pointer",
+                    "&:hover": {
+                      backgroundColor:
+                        alreadyApplied || studentFound === false
+                          ? "#d3d3d3"
+                          : "success.dark",
+                    },
+                  }}
+                  title={
+                    studentFound === false
+                      ? "You must be an interested student to apply"
+                      : alreadyApplied
+                        ? "You have already applied"
+                        : ""
+                  }
+                >
+                  {alreadyApplied
+                    ? "Applied"
+                    : studentFound === false
+                      ? "My Profile not filled"
+                      : "Apply"}
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
+
+
+
       </CardContent>
     </Card>
   );

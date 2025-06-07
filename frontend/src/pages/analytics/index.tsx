@@ -100,29 +100,28 @@ export default function AnalyticsPage() {
         </Grid>
       </Grid>
 
-      <Typography variant="h4" mt={4} mb={2}>
-        Placement Analytics
-      </Typography>
+  <Typography variant="h4" mt={4} mb={2}>
+  Placement Analytics
+</Typography>
 
-      <Grid container spacing={4}>
-        {branchData.map((branch) => {
-          const percentage = branch.interested
-            ? ((branch.placed / branch.interested) * 100).toFixed(1)
-            : "0.0";
-          return (
-            <Grid item xs={12} md={6} lg={4} key={branch.branch}>
-              <Paper sx={{ p: 2, backgroundColor: "#1e1e1e", color: "#fff" }}>
-                <Typography variant="h6">{branch.branch}</Typography>
-                <Typography>
-                  Interested Students: {branch.interested}
-                </Typography>
-                <Typography>Placed Students: {branch.placed}</Typography>
-                <Typography>Placement %: {percentage}%</Typography>
-              </Paper>
-            </Grid>
-          );
-        })}
+<Grid container spacing={2} wrap="nowrap" sx={{ overflowX: 'auto' }}>
+  {branchData.map((branch) => {
+    const percentage = branch.interested
+      ? ((branch.placed / branch.interested) * 100).toFixed(1)
+      : "0.0";
+    return (
+      <Grid item xs="auto" key={branch.branch}ml={"15px"}>
+        <Paper sx={{ p: 2, minWidth: 200, backgroundColor: "#1e1e1e", color: "#fff" }}>
+          <Typography variant="h6">{branch.branch}</Typography>
+          <Typography>Interested Students: {branch.interested}</Typography>
+          <Typography>Placed Students: {branch.placed}</Typography>
+          <Typography>Placement %: {percentage}%</Typography>
+        </Paper>
       </Grid>
+    );
+  })}
+</Grid>
+
 
       <Typography variant="h5" mt={6} mb={2}>
         Branch-wise Placement Chart

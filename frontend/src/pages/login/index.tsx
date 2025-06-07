@@ -92,7 +92,7 @@ export default function LoginPage() {
         component="h1"
         fontWeight="bold"
         textAlign="center"
-        mt={10}
+        mt={2}
         mb={4}
         sx={{ userSelect: "none" }}
       >
@@ -106,14 +106,14 @@ export default function LoginPage() {
         justifyContent="center"
         flexGrow={1}
         width="100%"
-        mt={-10}
+        mt={-5}
       >
-        <Box height="50vh" width="30vh" mr={-10} ml={-10} mt={20}>
+        <Box height="50vh" width="30vh" mr={-10} ml={-10} mt={10}>
           <Image
             src="/logo.png"
             alt="Logo"
-            width={300}
-            height={300}
+            width={250}
+            height={250}
             style={{
               filter: "drop-shadow(0 0 8px white)",
             }}
@@ -128,7 +128,8 @@ export default function LoginPage() {
               backgroundColor: "white",
               boxShadow: "0 0 8px 2px rgba(255, 255, 255, 0.45)",
               borderRadius: 1,
-              mx: 20,
+              mx: 30,
+              mr:10,
             }}
           />
         </Box>
