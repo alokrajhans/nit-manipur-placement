@@ -22,6 +22,8 @@ import {
 import ShowIfAdmin from "../ShowIfAdmin";
 
 const Branches = ["CSE", "ECE", "EE", "ME", "CE"];
+const Types = ["Internship Only","Internship + PPO" ,"Fulltime + Internship","Fulltime Only"]
+const yesOrno = ["Yes", "No"]
 
 export default function StudentSelection() {
   const [open, setOpen] = useState(false);
@@ -159,25 +161,6 @@ export default function StudentSelection() {
               </Grid>
             ))}
 
-            {/* Opportunity Type Select (Valid Placement) */}
-            <Grid item xs={12} sm={6}>
-              <TextField
-                select
-                required
-                fullWidth
-                label="Type"
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-              >
-                <MenuItem value="Internship Only">Internship Only</MenuItem>
-                <MenuItem value="Internship + PPO">Internship + PPO</MenuItem>
-                <MenuItem value="Fulltime+Internship">Fulltime+Internship</MenuItem>
-                <MenuItem value="Fulltime Only">Fulltime Only</MenuItem>
-              </TextField>
-            </Grid>
-
-
             {/* Branch Dropdown */}
             <Grid item xs={12} sm={6} minWidth={"120px"}>
               <TextField
@@ -190,6 +173,40 @@ export default function StudentSelection() {
                 onChange={handleChange}
               >
                 {Branches.map((b) => (
+                  <MenuItem key={b} value={b}>
+                    {b}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+               <Grid item xs={12} sm={6} minWidth={"120px"}>
+              <TextField
+                required
+                select
+                fullWidth
+                label="Type"
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+              >
+                {Types.map((b) => (
+                  <MenuItem key={b} value={b}>
+                    {b}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+                  <Grid item xs={12} sm={6} minWidth={"120px"}>
+              <TextField
+                required
+                select
+                fullWidth
+                label="Internship"
+                name="internship"
+                value={formData.internship}
+                onChange={handleChange}
+              >
+                {yesOrno.map((b) => (
                   <MenuItem key={b} value={b}>
                     {b}
                   </MenuItem>
