@@ -159,6 +159,25 @@ export default function StudentSelection() {
               </Grid>
             ))}
 
+            {/* Opportunity Type Select (Valid Placement) */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                select
+                required
+                fullWidth
+                label="Type"
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+              >
+                <MenuItem value="Internship Only">Internship Only</MenuItem>
+                <MenuItem value="Internship + PPO">Internship + PPO</MenuItem>
+                <MenuItem value="Fulltime+Internship">Fulltime+Internship</MenuItem>
+                <MenuItem value="Fulltime Only">Fulltime Only</MenuItem>
+              </TextField>
+            </Grid>
+
+
             {/* Branch Dropdown */}
             <Grid item xs={12} sm={6} minWidth={"120px"}>
               <TextField
