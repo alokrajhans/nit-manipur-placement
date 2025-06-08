@@ -28,6 +28,7 @@ import {
 import { AppliedJob, getAllAppliedJobs } from "@/src/service/appliedJobs";
 import { getOngoingJobs, OngoingJob } from "@/src/service/ongoingJobs";
 import ShowIfAdmin from "@/src/components/ShowIfAdmin";
+import { media } from "@/src/utils/breakpoints";
 
 export default function AppliedJobsPage() {
   const [interestedStudents, setInterestedStudents] = useState<
@@ -145,7 +146,7 @@ export default function AppliedJobsPage() {
   );
 
   return (
-    <Container>
+    <Container sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "245%", alignItems: 'stretch', mr: "20px" } }}>
       {/* <Box>
         <Navbar />
       </Box> */}

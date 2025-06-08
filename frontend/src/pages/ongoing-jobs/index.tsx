@@ -5,6 +5,7 @@ import { Container, Box, Typography } from "@mui/material";
 import { OngoingJob, getOngoingJobs } from "@/src/service/ongoingJobs";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/src/components/hooks";
+import { media } from "@/src/utils/breakpoints";
 
 // Helper mappings
 function mapJobType(type?: string): "IT" | "Core" {
@@ -80,14 +81,14 @@ export default function OngoingJobsPage() {
   const showAddJob = role !== 2 && (roleD === 0 || roleD === 1);
 
   return (
-    <Container>
+    <Container >
       {showAddJob && (
         <Box mt={2}>
           <AddJobDialog />
         </Box>
       )}
 
-      <Box mt={3}>
+      <Box mt={3} sx={{[media.st]:{minWidth:"850px"}}}>
         {loading && <Typography>Loading jobs...</Typography>}
         {error && <Typography color="error">{error}</Typography>}
         {!loading && !error && jobs.length === 0 && (

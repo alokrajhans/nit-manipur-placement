@@ -20,6 +20,7 @@ import {
   CompanyVisited,
 } from "@/src/service/companyVisited";
 import ShowIfAdmin from "@/src/components/ShowIfAdmin";
+import { media } from "@/src/utils/breakpoints";
 
 export default function CompaniesVisitedPage() {
   const [companiesVisited, setCompaniesVisited] = useState<CompanyVisited[]>(
@@ -68,7 +69,7 @@ export default function CompaniesVisitedPage() {
         <Navbar />
       </Box> */}
 
-      <Box mt={4}>
+      <Box mt={4} sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "265%", alignItems: 'stretch', mr: "20px" } }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h4" gutterBottom>
             Companies Visited
@@ -81,6 +82,7 @@ export default function CompaniesVisitedPage() {
               sx={{
                 backgroundColor: "#388e3c",
                 "&:hover": { backgroundColor: "#2e7d32" },
+                [media.st]:{mr:"10px"}
               }}
               disabled={loading || companiesVisited.length === 0}
             >
@@ -90,7 +92,7 @@ export default function CompaniesVisitedPage() {
         </Box>
       </Box>
 
-      <Box sx={{ overflowX: "auto" }}>
+      <Box sx={{ overflowX: "auto", [media.st]: { color: "primary", backgroundColor: "background.default", width: "265%", alignItems: 'stretch', mr: "20px" }}} >
         {loading && <Typography>Loading companies data...</Typography>}
         {error && (
           <Typography color="error" sx={{ mt: 2 }}>

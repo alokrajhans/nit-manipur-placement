@@ -9,6 +9,8 @@ import {
   Tooltip,
   IconButton,
   Grid,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -20,6 +22,7 @@ import {
   getAllAppliedJobs,
 } from "@/src/service/appliedJobs";
 import { getInterestedStudentByEnrollment } from "@/src/service/interestedStudents";
+import { media } from "@/src/utils/breakpoints";
 
 
 // const [alreadyApplied, setAlreadyApplied] = useState(false);
@@ -66,6 +69,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
   const [alreadyApplied, setAlreadyApplied] = useState(false);
   const [studentFound, setStudentFound] = useState<boolean | null>(null); // ✅ move here
   const alertShownRef = useRef(false);
+
 
 
   const jobLink = `${typeof window !== "undefined" ? window.location.origin : ""
@@ -234,7 +238,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
             ];
 
             return columnData.map((column, idx) => (
-              <Grid item xs={12} sm={6} md={2} key={idx}>
+              <Grid item xs={12} sm={6} md={2} key={idx} sx={{ [media.st]: { flexBasis: '20%', maxWidth: '20%' } }}>
                 {column.map((item, index) => (
                   <Typography variant="body2" gutterBottom key={index}>
                     <strong>{item.label}:</strong> {item.value}
@@ -245,17 +249,27 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
           })()}
 
           {/* 5th Column: Icons */}
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid item xs={12} sm={6} md={2} sx={{
+            [media.st]: {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 1,
+              flexBasis: '20%',
+              maxWidth: '20%',
+            },
+          }}>
             <Grid
               container
               direction="column"
               justifyContent="flex-start"
               alignItems="center"
               spacing={2}
+              sx={{ [media.st]: { flex: 1, mt: "-70px" } }}
             >
               <Grid item>
                 <Tooltip title="Copy Job Data">
-                  <IconButton onClick={handleCopyJSON} color="primary">
+                  <IconButton onClick={handleCopyJSON} color="primary" >
                     <ContentCopyIcon />
                   </IconButton>
                 </Tooltip>
@@ -269,10 +283,11 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
               </Grid>
             </Grid>
           </Grid>
-
           {/* 6th Column: Apply Button */}
-          <Grid item xs={12} sm={6} md={2}>
-            <Grid container direction="column" alignItems="center">
+          <Grid item xs={12} sm={6} md={2} >
+            <Grid container direction="column" alignItems="center" sx={{
+            [media.st]: {alignItems:"flex-end",mt:"-50px"}
+          }}>
               <Grid item>
                 <Button
                   variant="contained"

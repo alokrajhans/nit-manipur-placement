@@ -7,6 +7,7 @@ import { useCallback } from "react";
 import Image from "next/image";
 import apiClient from "@/src/utils/apiClient";
 import Link from "next/link";
+import { media } from "@/src/utils/breakpoints";
 
 const Navbar = () => {
   const router = useRouter();
@@ -60,20 +61,21 @@ const Navbar = () => {
     // >
     //   MyLogo
     // </Typography>
-    <Box ml={"-10x"} mt={"9px"}mr={"2px"}>
-    <Link href="/" passHref>
-      <Image
-        src="/logo.png"
-        alt="Logo"
-        width={40}
-        height={40}
-        style={{
-          cursor: "pointer",
-          filter: "drop-shadow(0 0 2px white)",
-        }}
-      />
-    </Link>
-  </Box>
+    <Box ml={"-10x"} mt={"9px"} mr={"2px"}  sx ={{ [media.st]:{ml:"-20px"}}}>
+      <Link href="/" passHref>
+        <Image
+          src="/logo.png"
+          alt="Logo"
+          width={40}
+          height={40}
+          style={{
+            cursor: "pointer",
+            filter: "drop-shadow(0 0 2px white)",
+           
+          }}
+        />
+      </Link>
+    </Box>
   );
 
   // const handleHover = (event: React.MouseEvent<HTMLElement>) => {
@@ -150,9 +152,16 @@ const Navbar = () => {
       <AppBar
         position="static"
         color="primary"
-        sx={{ bgcolor: "background.default" }}
+        sx={{
+          bgcolor: "background.default",
+          // [media.st]: {
+          //   bgcolor: "primary", // example override for small screens
+          //   // optional: reduce height for mobile
+          //  minWidth:"auto"      // optional: add horizontal padding
+          // }
+        }}
       >
-        <Toolbar>
+        <Toolbar sx={{[media.st] :{ color:"primary",backgroundColor:"background.default",width:"265%", alignItems: 'stretch',mr:"20px"}}}>
           <Box sx={{ flexGrow: 1 }}>
             <Logo />
           </Box>

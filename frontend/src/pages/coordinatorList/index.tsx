@@ -5,6 +5,7 @@ import Navbar from "@/src/components/Navbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ShowIfAdmin from "@/src/components/ShowIfAdmin";
+import { media } from "@/src/utils/breakpoints";
 export default function Coordinators() {
   const router = useRouter();
 
@@ -55,28 +56,28 @@ export default function Coordinators() {
   );
 
   return (
-    <Container>
+    <Container sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "245%", alignItems: 'stretch', mr: "20px" } }}>
       {/* <Box>
       <Navbar />
     </Box> */}
 
       {/* Button below Navbar */}
       <ShowIfAdmin>
-      <Button
-        variant="contained"
-        onClick={() => router.push("/interested-students")}
-        sx={{
-          mt: "15px",
-          mr: "15px",
-          backgroundColor: "#388e3c",
-          color: "black",
-          "&:hover": {
-            backgroundColor: "#2e7031",
-          },
-        }}
-      >
-        Interested Students List
-      </Button>
+        <Button
+          variant="contained"
+          onClick={() => router.push("/interested-students")}
+          sx={{
+            mt: "15px",
+            mr: "15px",
+            backgroundColor: "#388e3c",
+            color: "black",
+            "&:hover": {
+              backgroundColor: "#2e7031",
+            },
+          }}
+        >
+          Interested Students List
+        </Button>
       </ShowIfAdmin>
       {/* <Button
         variant="contained"
@@ -96,12 +97,26 @@ export default function Coordinators() {
       <Container sx={{ mt: 4 }}>
         <Grid container spacing={3}>
           {sortedData.map((coord, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              key={index}
+              sx={{
+                [media.st]: {
+                  flexBasis: "33.33%",
+                  maxWidth: "33.33%",
+                },
+              }}
+            >
               <CoordinatorTile {...coord} />
             </Grid>
           ))}
         </Grid>
       </Container>
+
+
     </Container>
   );
 }

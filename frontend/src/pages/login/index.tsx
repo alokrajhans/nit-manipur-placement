@@ -8,6 +8,8 @@ import { loginUser } from "@/src/service/auth";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/src/components/hooks";
 import { setUserDetails } from "@/src/store/userSlice";
+import { media } from "@/src/utils/breakpoints";
+import { Height } from "@mui/icons-material";
 
 export default function LoginPage() {
   const [roll, setRoll] = useState("");
@@ -76,150 +78,181 @@ export default function LoginPage() {
     // console.log("✅ User state after dispatch:", user);
   }, [user]);
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        px: 4,
-        bgcolor: "background.default",
-        color: "text.primary",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
+    <Box>
       <Typography
         variant="h3"
         component="h1"
         fontWeight="bold"
         textAlign="center"
-        mt={2}
-        mb={4}
-        sx={{ userSelect: "none" }}
+        mt={3}
+        mb={-10}
+        sx={{
+          ml: "40px",
+          fontSize: "30px",
+          width: "100vh",
+          display: "none", // hide by default
+          [media.st]: {
+            display: "block", // show only at media.st breakpoint
+          },
+        }}
       >
         Training and Placement Cell NIT Manipur
       </Typography>
 
       <Box
-        display="flex"
-        flexDirection="row"
-        alignItems="center"
-        justifyContent="center"
-        flexGrow={1}
-        width="100%"
-        mt={-5}
+        sx={{
+          minHeight: "100vh",
+          px: 4,
+          bgcolor: "background.default",
+          color: "text.primary",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          [media.st]: { transform: 'rotate(90deg)', color: "primary", backgroundColor: "background.default", width: "200%", alignItems: 'stretch', mb: "40px", mt: "230px" }
+        }}
       >
-        <Box height="50vh" width="30vh" mr={-10} ml={-10} mt={10}>
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={250}
-            height={250}
-            style={{
-              filter: "drop-shadow(0 0 8px white)",
-            }}
-          />
-        </Box>
+        <Typography
+          variant="h3"
+          component="h1"
+          fontWeight="bold"
+          textAlign="center"
+          mt={2}
+          mb={4}
+          sx={{
+            userSelect: "none",
+            [media.st]: {
+              display: "none",
+            },
+          }}
+        >
+          Training and Placement Cell NIT Manipur
+        </Typography>
 
-        <Box display="flex" alignItems="center" mr={10}>
-          <Box
-            sx={{
-              height: "500px",
-              width: "2px",
-              backgroundColor: "white",
-              boxShadow: "0 0 8px 2px rgba(255, 255, 255, 0.45)",
-              borderRadius: 1,
-              mx: 30,
-              mr:10,
-            }}
-          />
-        </Box>
 
         <Box
           display="flex"
-          flexDirection="column"
-          gap={2}
-          maxWidth={400}
-          width="100%"
+          flexDirection="row"
+          alignItems="center"
           justifyContent="center"
+          flexGrow={1}
+          width="100%"
+          mt={-5}
         >
-          <Typography variant="h4" gutterBottom>
-            Login
-          </Typography>
+          <Box height="50vh" width="30vh" mr={-20} ml={0} mt={15} sx={{ [media.st]: { mb: "-20px", transform: 'rotate(270deg)' } }} >
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={250}
+              height={250}
+              style={{
+                filter: "drop-shadow(0 0 8px white)",
+
+              }}
+            />
+          </Box>
+
+          <Box display="flex" alignItems="center" mr={10}>
+            <Box
+              sx={{
+                height: "500px",
+                width: "2px",
+                backgroundColor: "white",
+                boxShadow: "0 0 8px 2px rgba(255, 255, 255, 0.45)",
+                borderRadius: 1,
+                mx: 30,
+                mr: 10,
+                [media.st]: { mb: "-40px" }
+              }}
+            />
+          </Box>
 
           <Box
-            component="form"
-            onSubmit={handleLogin}
             display="flex"
             flexDirection="column"
             gap={2}
-            sx={{
-              boxShadow: "0 0 10px 2px rgba(255, 255, 255, 0.7)",
-              borderRadius: 2,
-              padding: 2,
-            }}
+            maxWidth={400}
+            width="100%"
+            justifyContent="center"
+            sx={{ [media.st]: { transform: 'rotate(270deg)', mb: "-30px", ml: "-60px", minWidth: "300px" } }}
           >
-            <TextField
-              label="Roll Number"
-              fullWidth
-              value={roll}
-              onChange={(e) => setRoll(e.target.value)}
-              required
-            />
+            <Typography variant="h4" gutterBottom>
+              Login
+            </Typography>
 
-            <TextField
-              label="Password"
-              type="password"
-              fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              helperText={
-                password
-                  ? `Strength: ${
-                      ["Too Weak", "Weak", "Fair", "Good", "Strong"][
-                        strength.score
-                      ]
-                    }`
-                  : ""
-              }
-              required
-            />
-
-            <Button
-              variant="contained"
-              type="submit"
-              fullWidth
+            <Box
+              component="form"
+              onSubmit={handleLogin}
+              display="flex"
+              flexDirection="column"
+              gap={2}
               sx={{
-                mt: 1,
-                backgroundColor: "#388e3c",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#2e7031",
-                },
+                boxShadow: "0 0 10px 2px rgba(255, 255, 255, 0.7)",
+                borderRadius: 2,
+                padding: 2,
               }}
             >
-              Login
-            </Button>
-          </Box>
+              <TextField
+                label="Roll Number"
+                fullWidth
+                value={roll}
+                onChange={(e) => setRoll(e.target.value)}
+                required
+              />
 
-          <Typography
-            variant="body2"
-            align="center"
-            sx={{ mt: 1, color: "white" }}
-          >
-            Not registered yet?{" "}
-            <Link href="/register" passHref legacyBehavior>
-              <a
-                style={{
-                  color: "#388e3c",
-                  cursor: "pointer",
-                  textDecoration: "underline",
-                  fontSize: "18px",
+              <TextField
+                label="Password"
+                type="password"
+                fullWidth
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                helperText={
+                  password
+                    ? `Strength: ${["Too Weak", "Weak", "Fair", "Good", "Strong"][
+                    strength.score
+                    ]
+                    }`
+                    : ""
+                }
+                required
+              />
+
+              <Button
+                variant="contained"
+                type="submit"
+                fullWidth
+                sx={{
+                  mt: 1,
+                  backgroundColor: "#388e3c",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#2e7031",
+                  },
                 }}
               >
-                Register here
-              </a>
-            </Link>
-          </Typography>
+                Login
+              </Button>
+            </Box>
+
+            <Typography
+              variant="body2"
+              align="center"
+              sx={{ mt: 1, color: "white" }}
+            >
+              Not registered yet?{" "}
+              <Link href="/register" passHref legacyBehavior>
+                <a
+                  style={{
+                    color: "#388e3c",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    fontSize: "18px",
+                  }}
+                >
+                  Register here
+                </a>
+              </Link>
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </Box>
