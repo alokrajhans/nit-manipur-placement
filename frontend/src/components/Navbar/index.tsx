@@ -100,7 +100,7 @@ const Navbar = () => {
             {/* Menu Dropdown */}
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
               {navItems.map((item, index) => (
-                <MenuItem key={index} onClick={() => handleProtectedNavigation(item.path)}>
+                <MenuItem key={index} onClick={() => {handleMenuClose(); handleProtectedNavigation(item.path);}}>
                   {item.label}
                 </MenuItem>
               ))}
