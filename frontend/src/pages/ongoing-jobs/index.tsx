@@ -88,7 +88,7 @@ export default function OngoingJobsPage() {
         </Box>
       )}
 
-      <Box mt={3} sx={{[media.st]:{minWidth:"100px"}}}>
+      <Box mt={3} sx={{ [media.st]: { minWidth: "100px" } }}>
         {loading && <Typography>Loading jobs...</Typography>}
         {error && <Typography color="error">{error}</Typography>}
         {!loading && !error && jobs.length === 0 && (
@@ -106,21 +106,21 @@ export default function OngoingJobsPage() {
               branchEligible={
                 job.Branch
                   ? (job.Branch.split(",").map((b) => b.trim()) as (
-                      | "CSE"
-                      | "ECE"
-                      | "EE"
-                      | "ME"
-                      | "CE"
-                    )[])
+                    | "CSE"
+                    | "ECE"
+                    | "EE"
+                    | "ME"
+                    | "CE"
+                  )[])
                   : []
               }
               courseEligible={
                 job.Course
                   ? (job.Course.split(",").map((c) => c.trim()) as (
-                      | "B.Tech"
-                      | "M.Tech"
-                      | "M.Sc"
-                    )[])
+                    | "B.Tech"
+                    | "M.Tech"
+                    | "M.Sc"
+                  )[])
                   : []
               }
               minCGPA={job.min_cgpa ?? 0}
@@ -136,6 +136,7 @@ export default function OngoingJobsPage() {
               jobDescriptionLink={job.jobDescriptionLink ?? ""}
               remarks={job.remarks ?? ""}
               handleBy={job.handleBy ?? ""}
+              isApplied={job.isApplied}
             />
           ))}
       </Box>

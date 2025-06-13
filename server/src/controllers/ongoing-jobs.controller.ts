@@ -1,4 +1,4 @@
-import {repository} from '@loopback/repository';
+import { repository } from '@loopback/repository';
 import {
   post,
   param,
@@ -10,21 +10,25 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {OngoingJobs} from '../models';
-import {OngoingJobsRepository} from '../repositories';
-import {authenticate} from '@loopback/authentication';
+import { AppliedJobs, OngoingJobs } from '../models';
+import { OngoingJobsRepository } from '../repositories';
+import { authenticate } from '@loopback/authentication';
+import { AppliedJobsRepository } from '@repositories/applied-jobs.repository';
+import { OngoingJobWithFlag } from 'src/types/ongoing-jobs-with-flag';
 
 @authenticate('jwt')
 export class OngoingJobsController {
   constructor(
     @repository(OngoingJobsRepository)
     public ongoingJobsRepository: OngoingJobsRepository,
-  ) {}
+    @repository(AppliedJobsRepository) // ✅ Add this line
+    public appliedJobsRepository: AppliedJobsRepository
+  ) { }
 
   @post('/ongoing-jobs')
   @response(201, {
     description: 'OngoingJobs model instance',
-    content: {'application/json': {schema: getModelSchemaRef(OngoingJobs)}},
+    content: { 'application/json': { schema: getModelSchemaRef(OngoingJobs) } },
   })
   async create(
     @requestBody({
@@ -45,27 +49,58 @@ export class OngoingJobsController {
   @get('/ongoing-jobs/{id}')
   @response(200, {
     description: 'OngoingJobs model instance',
-    content: {'application/json': {schema: getModelSchemaRef(OngoingJobs)}},
+    content: { 'application/json': { schema: getModelSchemaRef(OngoingJobs) } },
   })
   async findById(@param.path.number('id') id: number): Promise<OngoingJobs> {
     return this.ongoingJobsRepository.findById(id);
   }
 
+
+
   @get('/ongoing-jobs')
   @response(200, {
-    description: 'Array of OngoingJobs model instances',
+    description: 'Array of OngoingJobs with isApplied flag',
     content: {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(OngoingJobs, {includeRelations: true}),
+          items: {
+            allOf: [
+              getModelSchemaRef(OngoingJobs, { includeRelations: true }),
+              {
+                type: 'object',
+                properties: {
+                  isApplied: { type: 'number' },
+                },
+              },
+            ],
+          },
         },
       },
     },
   })
-  async find(): Promise<OngoingJobs[]> {
-    return this.ongoingJobsRepository.find();
+  async find(
+    @param.query.string('enrollmentNumber') enrollmentNumber: string
+  ): Promise<OngoingJobWithFlag[]> {
+    const allJobs = await this.ongoingJobsRepository.find();
+
+    const appliedJobs = await this.appliedJobsRepository.find({
+      where: { enrollment_number: enrollmentNumber },
+    });
+
+    const appliedSet = new Set(appliedJobs.map(j => j.company_name));
+
+    return allJobs.map(job => ({
+      ...job,
+      isApplied: appliedSet.has(job.company_name) ? 1 : 0,
+    }));
   }
+
+
+
+
+
+
 
   @patch('/ongoing-jobs/{id}')
   @response(204, {
@@ -76,7 +111,7 @@ export class OngoingJobsController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(OngoingJobs, {partial: true}),
+          schema: getModelSchemaRef(OngoingJobs, { partial: true }),
         },
       },
     })

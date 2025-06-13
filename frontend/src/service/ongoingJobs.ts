@@ -20,7 +20,8 @@ export interface OngoingJob {
   stipend?: number;
   handleBy?: string;
   backlog?: string;
-  date_updated?: string; // date as ISO string
+  date_updated?: string;
+  isApplied?: number; // date as ISO string
 }
 
 export const getOngoingJobs = async (): Promise<OngoingJob[]> => {

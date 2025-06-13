@@ -19,6 +19,8 @@ import apiClient from "@/src/utils/apiClient";
 import Link from "next/link";
 import { media } from "@/src/utils/breakpoints";
 import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+
 import LogoutIcon from "@mui/icons-material/Logout";
 
 const Navbar = () => {
@@ -88,13 +90,14 @@ const Navbar = () => {
               display: "flex",
               alignItems: "stretch",
               justifyContent: "space-between",
-              width: "100vw",      // ensures full viewport width
+              width: "90vw",      // ensures full viewport width
               px: 2,
             }}
           >
             {/* Menu Button */}
             <IconButton edge="start"  color="inherit" aria-label="menu" onClick={handleMenuOpen}>
-              <MenuIcon />
+              {Boolean(anchorEl)? <CloseIcon />:<MenuIcon />}
+              
             </IconButton>
 
             {/* Menu Dropdown */}
@@ -124,11 +127,21 @@ const Navbar = () => {
             </IconButton>
           </Box>       </>
       ) : (
-        <>
-          <Box sx={{ flexGrow: 1 }}>
-            <Logo />
-          </Box>
-          <Box sx={{ display: "flex", gap: 2 }}>
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between", // logo on left, buttons on right
+            width: "100%",
+            px: 2,
+          }}
+        >
+          {/* Logo on the left */}
+          <Logo />
+
+          {/* Buttons on the right */}
+          <Box sx={{ display: "flex", gap: 2.5 }}>
             {navItems.map((item, index) => (
               <Button
                 key={index}
@@ -161,7 +174,9 @@ const Navbar = () => {
               Logout
             </Button>
           </Box>
-        </>
+        </Box>
+
+
       )}
       {/* </Toolbar> */}
       {/* // </AppBar> */}

@@ -45,6 +45,7 @@ type JobBarTileProps = {
   backlog: ("No Active Backlog" | "No History Backlog" | "No Critera for Backlog");
   handleBy: string;
   remarks?: string;
+  isApplied: number;
 };
 const JobBarTile: React.FC<JobBarTileProps> = ({
   companyName,
@@ -65,6 +66,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
   jobDescriptionLink,
   handleBy,
   remarks,
+  isApplied,
 }) => {
   const [alreadyApplied, setAlreadyApplied] = useState(false);
   const [studentFound, setStudentFound] = useState<boolean | null>(null); // ✅ move here
@@ -108,54 +110,37 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
   const handleViewPDF = () => {
     window.open(jobDescriptionLink, "_blank");
   };
-  useEffect(() => {
-    const checkApplied = async () => {
-      const enrollmentNumber =
-        typeof window !== "undefined"
-          ? localStorage.getItem("enrollment_number")
-          : null;
+useEffect(() => {
+  const checkApplied = async () => {
+    const enrollmentNumber =
+      typeof window !== "undefined"
+        ? localStorage.getItem("enrollment_number")
+        : null;
 
-      if (!enrollmentNumber) {
-        setStudentFound(false);
-        return;
-      }
+    if (!enrollmentNumber) {
+      setStudentFound(false);
+      return;
+    }
 
-      try {
-        // Check if user is interested student
-        try {
-          const res = await getInterestedStudentByEnrollment(Number(enrollmentNumber));
-          if (res) {
-            setStudentFound(true);
-          } else {
-
-            setStudentFound(false);
-          }
-
-          // console.log("222",res);
-          // console.log("111",studentFound);
-        } catch (error) {
-          // console.error("Error fetching interested student", error);
-          setStudentFound(false);
-        }
-
-
-
-        // Check if already applied
-        const appliedJobs = await getAllAppliedJobs();
-        const hasApplied = appliedJobs.some(
-          (job) =>
-            job.enrollment_number === enrollmentNumber &&
-            job.company_name === companyName
-        );
-        setAlreadyApplied(hasApplied);
-      } catch (error) {
-        // console.error("Error checking applied status", error);
+    try {
+      // Check if user is interested student
+      const res = await getInterestedStudentByEnrollment(Number(enrollmentNumber));
+      if (res) {
+        setStudentFound(true);
+      } else {
         setStudentFound(false);
       }
-    };
+    } catch (error) {
+      setStudentFound(false);
+    }
 
-    checkApplied();
-  }, [companyName]);
+    // ✅ Set alreadyApplied using prop
+    setAlreadyApplied(isApplied === 1);
+  };
+
+  checkApplied();
+}, [isApplied]);
+
 
   const handleApply = async () => {
     if (alreadyApplied) {
@@ -199,6 +184,7 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
       !(window as any).__alertShownThisLoad
     ) {
       alert("Please fill your details in My Profile section!");
+      window.location.href = "/myProfile";
       alertShownRef.current = true;
       (window as any).__alertShownThisLoad = true;
     }

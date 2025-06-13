@@ -5,10 +5,10 @@ import { Box, Typography, Container, Link, useMediaQuery } from "@mui/material";
 import { media } from "@/src/utils/breakpoints";
 
 const Footer: React.FC = () => {
-  const isMobile = useMediaQuery("(max-width:360px)");
+  const isMobile = useMediaQuery("(max-width:460px)");
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" >
       <Box
         component="footer"
         sx={{

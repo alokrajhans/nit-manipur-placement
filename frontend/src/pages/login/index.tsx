@@ -139,7 +139,7 @@ export default function LoginPage() {
           width="100%"
           mt={"0vh"}
         >
-          <Box height="50vh" width="30vh" mr={"-30vh"} ml={0} mt={"15vh"} sx={{ [media.st]: { mb: "15vh", transform: 'rotate(270deg)' } }} >
+          <Box height="50vh" width="30vh" mr={"-20vh"} ml={0} mt={"15vh"} sx={{ [media.st]: { mb: "15vh", transform: 'rotate(270deg)' } }} >
             <Image
               src="/logo.png"
               alt="Logo"
