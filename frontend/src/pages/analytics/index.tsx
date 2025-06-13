@@ -74,7 +74,7 @@ export default function AnalyticsPage() {
   const notPlaced = totalInterested - totalPlaced;
 
   return (
-    <Container sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "245%", alignItems: 'stretch', mr: "20px",mt:"-30px" } }}>
+    <Container sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "100%", alignItems: 'stretch', mr: "20px",mt:"-30px" } }}>
       {/* <Box>
         <Navbar />
       </Box> */}

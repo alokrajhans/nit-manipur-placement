@@ -50,103 +50,104 @@ export default function RegisterPage() {
   };
 
   return (
-     <Box>
-         <Typography
-           variant="h3"
-           component="h1"
-           fontWeight="bold"
-           textAlign="center"
-           mt={3}
-           mb={-10}
-           sx={{
-             ml: "40px",
-             fontSize: "30px",
-             width: "100vh",
-             display: "none", // hide by default
-             [media.st]: {
-               display: "block", // show only at media.st breakpoint
-             },
-           }}
-         >
-           Training and Placement Cell NIT Manipur
-         </Typography>
-   
-         <Box
-           sx={{
-             minHeight: "100vh",
-             px: 4,
-             bgcolor: "background.default",
-             color: "text.primary",
-             display: "flex",
-             flexDirection: "column",
-             alignItems: "center",
-             [media.st]: { transform: 'rotate(90deg)', color: "primary", backgroundColor: "background.default", width: "200%", alignItems: 'stretch', mb: "40px", mt: "230px" }
-           }}
-         >
-           <Typography
-             variant="h3"
-             component="h1"
-             fontWeight="bold"
-             textAlign="center"
-             mt={2}
-             mb={4}
-             sx={{
-               userSelect: "none",
-               [media.st]: {
-                 display: "none",
-               },
-             }}
-           >
-             Training and Placement Cell NIT Manipur
-           </Typography>
-   
-   
+    <Box>
+      <Typography
+        variant="h3"
+        component="h1"
+        fontWeight="bold"
+        textAlign="center"
+        mt={"2vh"}
+        mb={"-15vh"}
+        sx={{
+          ml: "0vh",
+          fontSize: "30px",
+          width: "100vh",
+          display: "none", // hide by default
+          [media.st]: {
+            display: "block",
+            fontSize: "40px" // show only at media.st breakpoint
+          },
+        }}
+      >
+        Training and Placement Cell NIT Manipur
+      </Typography>
+
+      <Box
+        sx={{
+          minHeight: "100vh",
+          px: 4,
+          bgcolor: "background.default",
+          color: "text.primary",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          [media.st]: { transform: 'rotate(90deg)', color: "primary", backgroundColor: "background.default", width: "200%", alignItems: 'stretch', mb: "40px", mt: "230px" }
+        }}
+      >
+        <Typography
+          variant="h3"
+          component="h1"
+          fontWeight="bold"
+          textAlign="center"
+          mt={2}
+          mb={4}
+          sx={{
+            userSelect: "none",
+            [media.st]: {
+              display: "none",
+            },
+          }}
+        >
+          Training and Placement Cell NIT Manipur
+        </Typography>
+
+
+        <Box
+          display="flex"
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="center"
+          flexGrow={1}
+          width="100%"
+          mt={"0vh"}
+        >
+          <Box height="50vh" width="30vh" mr={"-30vh"} ml={0} mt={"15vh"} sx={{ [media.st]: { mb: "15vh", transform: 'rotate(270deg)' } }} >
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={250}
+              height={250}
+              style={{
+                filter: "drop-shadow(0 0 8px white)",
+
+              }}
+            />
+          </Box>
+
+          <Box display="flex" alignItems="center" mr={"10vh"}>
+            <Box
+              sx={{
+                height: "80vh",
+                width: "0.2vh",
+                backgroundColor: "white",
+                boxShadow: "0 0 8px 2px rgba(255, 255, 255, 0.45)",
+                borderRadius: 1,
+                mx: 30,
+                mr: 10,
+                [media.st]: { mb: "10vh" }
+              }}
+            />
+          </Box>
+
            <Box
-             display="flex"
-             flexDirection="row"
-             alignItems="center"
-             justifyContent="center"
-             flexGrow={1}
-             width="100%"
-             mt={-5}
-           >
-             <Box height="50vh" width="30vh" mr={-20} ml={0} mt={15} sx={{ [media.st]: { mb: "-20px", transform: 'rotate(270deg)' } }} >
-               <Image
-                 src="/logo.png"
-                 alt="Logo"
-                 width={250}
-                 height={250}
-                 style={{
-                   filter: "drop-shadow(0 0 8px white)",
-   
-                 }}
-               />
-             </Box>
-   
-             <Box display="flex" alignItems="center" mr={10}>
-               <Box
-                 sx={{
-                   height: "500px",
-                   width: "2px",
-                   backgroundColor: "white",
-                   boxShadow: "0 0 8px 2px rgba(255, 255, 255, 0.45)",
-                   borderRadius: 1,
-                   mx: 30,
-                   mr: 10,
-                   [media.st]: { mb: "-40px" }
-                 }}
-               />
-             </Box>
-   
-             <Box
-               display="flex"
-               flexDirection="column"
-               gap={2}
-               maxWidth={400}
-               width="100%"
-               justifyContent="center"
-               sx={{ [media.st]: { transform: 'rotate(270deg)', mb: "-30px", ml: "-60px", minWidth: "300px" } }}
-             >
+            display="flex"
+            flexDirection="column"
+            gap={2}
+            maxWidth={400}
+            width="100%"
+            justifyContent="center"
+            sx={{ [media.st]: { transform: 'rotate(270deg)', mb: "10vh", ml: "-20vh", minWidth: "60vh" ,minHeight:"90vh"} }}
+          >
             <Typography variant="h4" gutterBottom>
               Register
             </Typography>

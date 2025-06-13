@@ -1,5 +1,5 @@
 import { Typography, Container } from "@mui/material";
-import Navbar from "../components/Navbar";
+// import Navbar from "../components/Navbar";
 import { media } from "../utils/breakpoints";
 
 export default function LandingPage() {

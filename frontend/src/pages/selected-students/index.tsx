@@ -139,7 +139,7 @@ export default function SelectedStudentsPage() {
         <Navbar />
       </Box> */}
 
-      <Box mt={4} sx={{[media.st] :{ color:"primary",backgroundColor:"background.default",width:"265%", alignItems: 'stretch',mr:"20px"}}}>
+      <Box mt={4} sx={{[media.st] :{ color:"primary",backgroundColor:"background.default",width:"100%", alignItems: 'stretch',mr:"20px"}}}>
         <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={2}>
           <Typography variant="h4" gutterBottom>
             Selected Students

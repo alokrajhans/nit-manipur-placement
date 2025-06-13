@@ -56,7 +56,7 @@ export default function Coordinators() {
   );
 
   return (
-    <Container sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "245%", alignItems: 'stretch', mr: "20px" } }}>
+    <Container sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "100%", alignItems: 'stretch', mr: "20px" } }}>
       {/* <Box>
       <Navbar />
     </Box> */}
@@ -105,8 +105,8 @@ export default function Coordinators() {
               key={index}
               sx={{
                 [media.st]: {
-                  flexBasis: "33.33%",
-                  maxWidth: "33.33%",
+                  // flexBasis: "33.33%",
+                  maxWidth: "100%",
                 },
               }}
             >

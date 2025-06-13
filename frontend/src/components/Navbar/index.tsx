@@ -1,361 +1,150 @@
 "use client";
 
-import React from "react";
-import { AppBar, Toolbar, Button, Box } from "@mui/material";
+import React, { useCallback, useState } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Box,
+  useMediaQuery,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+  Container,
+} from "@mui/material";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
 import Image from "next/image";
 import apiClient from "@/src/utils/apiClient";
 import Link from "next/link";
 import { media } from "@/src/utils/breakpoints";
+import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const Navbar = () => {
+  const isMobile = useMediaQuery("(max-width:460px)");
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const router = useRouter();
-  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  // const [openDialog, setOpenDialog] = useState(false);
 
-  // // Form states for controlled inputs
-  // const [companyName, setCompanyName] = useState("");
-  // const [jobTitle, setJobTitle] = useState("");
-  // const [jobType, setJobType] = useState("");
-  // const [branchesEligible, setBranchesEligible] = useState<string[]>([]);
-  // const [coursesEligible, setCoursesEligible] = useState<string[]>([]);
-  // const [minCGPA, setMinCGPA] = useState("");
-  // const [minClass10, setMinClass10] = useState("");
-  // const [minClass12, setMinClass12] = useState("");
-  // const [deadline, setDeadline] = useState("");
-  // const [opportunityType, setOpportunityType] = useState("");
-  // const [bond, setBond] = useState("");
-  // const [stipend, setStipend] = useState("");
-  // const [packageLPA, setPackageLPA] = useState("");
-  // //   const [jobId, setJobId] = useState("");
-  // const [jobDescriptionLink, setJobDescriptionLink] = useState("");
-  // const [remarks, setRemarks] = useState("");
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  // // For errors
-  // const [errors, setErrors] = useState<Record<string, string>>({});
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleLogout = useCallback(() => {
-    // Clear token from sessionStorage
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("persist:root");
     localStorage.removeItem("enrollment_number");
     localStorage.removeItem("role");
-
-    // Optionally, clear any other auth-related storage (localStorage, cookies, etc.)
-
-    // Redirect to login page (or wherever you want)
     router.push("/login");
-
-    // Optional: alert or toast
-    // alert("Logged out successfully");
   }, [router]);
 
   const Logo = () => (
-    // <Typography
-    //   variant="h6"
-    //   component="div"
-    //   sx={{ cursor: "pointer", fontWeight: "bold" }}
-    //   onClick={() => router.push("/")}
-    //   mr={"10px"}
-    //   ml={"-15px"}
-    // >
-    //   MyLogo
-    // </Typography>
-    <Box ml={"-10x"} mt={"9px"} mr={"2px"}  sx ={{ [media.st]:{ml:"-20px"}}}>
+    <Box ml={-1} mt={1} mr={1} sx={{ [media.st]: { ml: -2 } }}>
       <Link href="/" passHref>
         <Image
           src="/logo.png"
           alt="Logo"
           width={40}
           height={40}
-          style={{
-            cursor: "pointer",
-            filter: "drop-shadow(0 0 2px white)",
-           
-          }}
+          style={{ cursor: "pointer", filter: "drop-shadow(0 0 2px white)" }}
         />
       </Link>
     </Box>
   );
 
-  // const handleHover = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
+  const navItems = [
+    { label: "Companies", path: "/ongoing-jobs" },
+    { label: "Companies Visited", path: "/companies-visited" },
+    { label: "Selected Students", path: "/selected-students" },
+    { label: "Analytics", path: "/analytics" },
+    { label: "Coordinator List", path: "/coordinatorList" },
+    { label: "Applied Jobs", path: "/applied-jobs" },
+    { label: "My Profile", path: "/myProfile" },
+  ];
 
-  // const handleCloseMenu = () => {
-  //   setAnchorEl(null);
-  // };
-
-  // const handleListJobClick = () => {
-  //   setOpenDialog(true);
-  //   handleCloseMenu();
-  // };
-
-  // const handleDialogClose = () => {
-  //   setOpenDialog(false);
-  //   setErrors({});
-  // };
-
-  // const handleBranchesChange = (
-  //   event: React.ChangeEvent<{ value: unknown }>
-  // ) => {
-  //   setBranchesEligible(event.target.value as string[]);
-  // };
-
-  // const handleCoursesChange = (
-  //   event: React.ChangeEvent<{ value: unknown }>
-  // ) => {
-  //   setCoursesEligible(event.target.value as string[]);
-  // };
-
-  // // Validation on submit
-  // const validateForm = () => {
-  //   const newErrors: Record<string, string> = {};
-
-  //   if (!companyName.trim()) newErrors.companyName = "Company Name is required";
-  //   if (!jobTitle.trim()) newErrors.jobTitle = "Job Title is required";
-  //   if (!jobType) newErrors.jobType = "Job Type is required";
-  //   if (branchesEligible.length === 0)
-  //     newErrors.branchesEligible = "Select at least one Branch Eligible";
-  //   if (coursesEligible.length === 0)
-  //     newErrors.coursesEligible = "Select at least one Course Eligible";
-  //   if (!minCGPA.trim()) newErrors.minCGPA = "Min CGPA is required";
-  //   if (!minClass10.trim()) newErrors.minClass10 = "Min Class 10 % is required";
-  //   if (!minClass12.trim()) newErrors.minClass12 = "Min Class 12 % is required";
-  //   if (!deadline.trim()) newErrors.deadline = "Deadline is required";
-  //   if (!opportunityType)
-  //     newErrors.opportunityType = "Opportunity Type is required";
-  //   if (!bond) newErrors.bond = "Bond selection is required";
-  //   if (!stipend.trim()) newErrors.stipend = "Stipend is required";
-  //   if (!packageLPA.trim()) newErrors.packageLPA = "Package is required";
-  //   // if (!jobId.trim()) newErrors.jobId = "Job ID is required";
-  //   if (!jobDescriptionLink.trim())
-  //     newErrors.jobDescriptionLink = "Job Description Link is required";
-
-  //   setErrors(newErrors);
-
-  //   return Object.keys(newErrors).length === 0;
-  // };
-
-  // const handleSubmit = () => {
-  //   if (validateForm()) {
-  //     // Handle form submit here
-  //     alert("Form Submitted Successfully");
-  //     handleDialogClose();
-
-  //     // Reset form states if you want here
-  //   }
-  // };
+  const handleProtectedNavigation = async (path: string) => {
+    try {
+      await apiClient.get("/me");
+      router.push(path);
+    } catch (error) {
+      console.warn("User not authenticated:", error);
+      router.push("/login");
+    }
+  };
 
   return (
     <>
-      <AppBar
-        position="static"
-        color="primary"
-        sx={{
-          bgcolor: "background.default",
-          // [media.st]: {
-          //   bgcolor: "primary", // example override for small screens
-          //   // optional: reduce height for mobile
-          //  minWidth:"auto"      // optional: add horizontal padding
-          // }
-        }}
-      >
-        <Toolbar sx={{[media.st] :{ color:"primary",backgroundColor:"background.default",width:"265%", alignItems: 'stretch',mr:"20px"}}}>
+      {/* // <AppBar position="static" color="primary" sx={{ bgcolor: "background.default", width: '100%' }}> */}
+      {/* <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}> */}
+      {isMobile ? (
+        <>
+          <Box
+            sx={{
+              mt: "20px",
+              display: "flex",
+              alignItems: "stretch",
+              justifyContent: "space-between",
+              width: "100vw",      // ensures full viewport width
+              px: 2,
+            }}
+          >
+            {/* Menu Button */}
+            <IconButton edge="start"  color="inherit" aria-label="menu" onClick={handleMenuOpen}>
+              <MenuIcon />
+            </IconButton>
+
+            {/* Menu Dropdown */}
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+              {navItems.map((item, index) => (
+                <MenuItem key={index} onClick={() => handleProtectedNavigation(item.path)}>
+                  {item.label}
+                </MenuItem>
+              ))}
+            </Menu>
+
+            {/* Title */}
+            <Typography
+              sx={{
+                flexGrow: 1,
+                textAlign: "center",
+                fontSize: "20px",
+                fontWeight: "bold",
+              }}
+            >
+              Placement Portal
+            </Typography>
+
+            {/* Logout Button */}
+            <IconButton color="inherit" onClick={handleLogout}>
+              <LogoutIcon />
+            </IconButton>
+          </Box>       </>
+      ) : (
+        <>
           <Box sx={{ flexGrow: 1 }}>
             <Logo />
           </Box>
-
           <Box sx={{ display: "flex", gap: 2 }}>
-            {/* <Button
-              color="inherit"
-              onMouseEnter={handleHover}
-              sx={{
-                transition: "0.3s ease",
-                "&:hover": {
-                  boxShadow: "0 0 10px 3px rgba(30, 144, 255, 0.4)",
-                  transform: "scale(1.03)",
-                },
-              }}
-            >
-              Companies
-            </Button> */}
-
-            <Button
-              color="inherit"
-              sx={{
-                transition: "0.3s ease",
-                "&:hover": {
-                  boxShadow: "0 0 10px 3px rgba(30, 144, 255, 0.4)",
-                  transform: "scale(1.03)",
-                },
-              }}
-              onClick={async () => {
-                try {
-                  // 🔐 Check if token is valid via a protected endpoint
-                  await apiClient.get("/me"); // Replace with your actual endpoint
-
-                  // ✅ If no error, user is authenticated
-                  router.push("/ongoing-jobs");
-                } catch (error) {
-                  console.warn("User not authenticated:", error);
-                  router.push("/login"); // 🚪 redirect to login if not authorized
-                }
-              }}
-            >
-              Companies
-            </Button>
-
-            <Button
-              color="inherit"
-              sx={{
-                transition: "0.3s ease",
-                "&:hover": {
-                  boxShadow: "0 0 10px 3px rgba(30, 144, 255, 0.4)",
-                  transform: "scale(1.03)",
-                },
-              }}
-              // onClick={() => router.push("/companies-visited")}
-              onClick={async () => {
-                try {
-                  // 🔐 Check if token is valid via a protected endpoint
-                  await apiClient.get("/me"); // Replace with your actual endpoint
-
-                  // ✅ If no error, user is authenticated
-                  router.push("/companies-visited");
-                } catch (error) {
-                  console.warn("User not authenticated:", error);
-                  router.push("/login"); // 🚪 redirect to login if not authorized
-                }
-              }}
-            >
-              Companies Visited
-            </Button>
-            <Button
-              color="inherit"
-              sx={{
-                transition: "0.3s ease",
-                "&:hover": {
-                  boxShadow: "0 0 10px 3px rgba(30, 144, 255, 0.4)",
-                  transform: "scale(1.03)",
-                },
-              }}
-              // onClick={() => router.push("/selected-students")}
-              onClick={async () => {
-                try {
-                  // 🔐 Check if token is valid via a protected endpoint
-                  await apiClient.get("/me"); // Replace with your actual endpoint
-
-                  // ✅ If no error, user is authenticated
-                  router.push("/selected-students");
-                } catch (error) {
-                  console.warn("User not authenticated:", error);
-                  router.push("/login"); // 🚪 redirect to login if not authorized
-                }
-              }}
-            >
-              Selected Students
-            </Button>
-            <Button
-              color="inherit"
-              sx={{
-                transition: "0.3s ease",
-                "&:hover": {
-                  boxShadow: "0 0 10px 3px rgba(30, 144, 255, 0.4)",
-                  transform: "scale(1.03)",
-                },
-              }}
-              // onClick={() => router.push("/analytics")}
-              onClick={async () => {
-                try {
-                  // 🔐 Check if token is valid via a protected endpoint
-                  await apiClient.get("/me"); // Replace with your actual endpoint
-
-                  // ✅ If no error, user is authenticated
-                  router.push("/analytics");
-                } catch (error) {
-                  console.warn("User not authenticated:", error);
-                  router.push("/login"); // 🚪 redirect to login if not authorized
-                }
-              }}
-            >
-              Analytics
-            </Button>
-            <Button
-              color="inherit"
-              sx={{
-                transition: "0.3s ease",
-                "&:hover": {
-                  boxShadow: "0 0 10px 3px rgba(30, 144, 255, 0.4)",
-                  transform: "scale(1.03)",
-                },
-              }}
-              // onClick={() => router.push("/coordinatorList")}
-              onClick={async () => {
-                try {
-                  // 🔐 Check if token is valid via a protected endpoint
-                  await apiClient.get("/me"); // Replace with your actual endpoint
-
-                  // ✅ If no error, user is authenticated
-                  router.push("/coordinatorList");
-                } catch (error) {
-                  console.warn("User not authenticated:", error);
-                  router.push("/login"); // 🚪 redirect to login if not authorized
-                }
-              }}
-            >
-              Coordinator List
-            </Button>
-            <Button
-              color="inherit"
-              sx={{
-                transition: "0.3s ease",
-                "&:hover": {
-                  boxShadow: "0 0 10px 3px rgba(30, 144, 255, 0.4)",
-                  transform: "scale(1.03)",
-                },
-              }}
-              // onClick={() => router.push("/rules")}
-              onClick={async () => {
-                try {
-                  // 🔐 Check if token is valid via a protected endpoint
-                  await apiClient.get("/me"); // Replace with your actual endpoint
-
-                  // ✅ If no error, user is authenticated
-                  router.push("/applied-jobs");
-                } catch (error) {
-                  console.warn("User not authenticated:", error);
-                  router.push("/login"); // 🚪 redirect to login if not authorized
-                }
-              }}
-            >
-              Applied Jobs
-            </Button>
-            <Button
-              color="inherit"
-              sx={{
-                transition: "0.3s ease",
-                "&:hover": {
-                  boxShadow: "0 0 10px 3px rgba(30, 144, 255, 0.4)",
-                  transform: "scale(1.03)",
-                },
-              }}
-              // onClick={() => router.push("/myProfile")}
-              onClick={async () => {
-                try {
-                  // 🔐 Check if token is valid via a protected endpoint
-                  await apiClient.get("/me"); // Replace with your actual endpoint
-
-                  // ✅ If no error, user is authenticated
-                  router.push("/myProfile");
-                } catch (error) {
-                  console.warn("User not authenticated:", error);
-                  router.push("/login"); // 🚪 redirect to login if not authorized
-                }
-              }}
-            >
-              My Profile
-            </Button>
+            {navItems.map((item, index) => (
+              <Button
+                key={index}
+                color="inherit"
+                sx={{
+                  transition: "0.3s ease",
+                  "&:hover": {
+                    boxShadow: "0 0 10px 3px rgba(30, 144, 255, 0.4)",
+                    transform: "scale(1.03)",
+                  },
+                }}
+                onClick={() => handleProtectedNavigation(item.path)}
+              >
+                {item.label}
+              </Button>
+            ))}
             <Button
               variant="outlined"
               color="inherit"
@@ -372,10 +161,10 @@ const Navbar = () => {
               Logout
             </Button>
           </Box>
-        </Toolbar>
-      </AppBar>
-
-      {/* Dialog Form */}
+        </>
+      )}
+      {/* </Toolbar> */}
+      {/* // </AppBar> */}
     </>
   );
 };

@@ -88,7 +88,7 @@ export default function OngoingJobsPage() {
         </Box>
       )}
 
-      <Box mt={3} sx={{[media.st]:{minWidth:"850px"}}}>
+      <Box mt={3} sx={{[media.st]:{minWidth:"100px"}}}>
         {loading && <Typography>Loading jobs...</Typography>}
         {error && <Typography color="error">{error}</Typography>}
         {!loading && !error && jobs.length === 0 && (

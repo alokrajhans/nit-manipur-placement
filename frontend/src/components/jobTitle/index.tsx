@@ -158,7 +158,15 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
   }, [companyName]);
 
   const handleApply = async () => {
-    if (alreadyApplied || !studentFound) return;
+    if (alreadyApplied) {
+      alert("You have already applied")
+      return;
+    }
+    else if (!studentFound) {
+      alert("Please fill your profile!")
+      window.location.href = "/myProfile";
+      return;
+    };
 
     const enrollmentNumber =
       typeof window !== "undefined"
@@ -286,10 +294,10 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
           {/* 6th Column: Apply Button */}
           <Grid item xs={12} sm={6} md={2} >
             <Grid container direction="column" alignItems="center" sx={{
-            [media.st]: {alignItems:"flex-end",mt:"-50px"}
-          }}>
+              [media.st]: { alignItems: "flex-end", mt: "-50px" }
+            }}>
               <Grid item>
-                <Button
+                {/* <Button
                   variant="contained"
                   disabled={alreadyApplied || studentFound === false}
                   onClick={handleApply}
@@ -328,6 +336,36 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
                     : studentFound === false
                       ? "My Profile not filled"
                       : "Apply"}
+                </Button> */}
+                <Button
+                  variant="contained"
+                  // disabled={alreadyApplied || studentFound === false}
+                  onClick={handleApply}
+                  endIcon={<SendIcon />}
+                  sx={{
+                    fontSize: "0.8rem",
+                    padding: "4px 10px",
+                    minWidth: "80px",
+                    backgroundColor:
+                      "success.main",
+                    color:
+                      "fff",
+                    cursor:
+                      "pointer",
+                    "&:hover": {
+                      backgroundColor:
+                        "success.dark",
+                    },
+                  }}
+                  title={
+                    studentFound === false
+                      ? "You must be an interested student to apply"
+                      : alreadyApplied
+                        ? "You have already applied"
+                        : ""
+                  }
+                >
+                  {"Apply"}
                 </Button>
               </Grid>
             </Grid>

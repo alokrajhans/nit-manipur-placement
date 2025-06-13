@@ -182,7 +182,7 @@ export default function MyProfile() {
   }, []);
 
   return (
-    <Container sx={{[media.st] :{ color:"primary",backgroundColor:"background.default",width:"245%", alignItems: 'stretch',mr:"20px"}}}>
+    <Container sx={{[media.st] :{ color:"primary",backgroundColor:"background.default",width:"100%", alignItems: 'stretch',mr:"20px"}}}>
       {/* <Box>
         <Navbar />
       </Box> */}

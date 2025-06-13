@@ -69,7 +69,7 @@ export default function CompaniesVisitedPage() {
         <Navbar />
       </Box> */}
 
-      <Box mt={4} sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "265%", alignItems: 'stretch', mr: "20px" } }}>
+      <Box mt={4} sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "100%", alignItems: 'stretch', mr: "20px" } }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h4" gutterBottom>
             Companies Visited
@@ -92,7 +92,7 @@ export default function CompaniesVisitedPage() {
         </Box>
       </Box>
 
-      <Box sx={{ overflowX: "auto", [media.st]: { color: "primary", backgroundColor: "background.default", width: "265%", alignItems: 'stretch', mr: "20px" }}} >
+      <Box sx={{ overflowX: "auto", [media.st]: { color: "primary", backgroundColor: "background.default", width: "100%", alignItems: 'stretch', mr: "20px" }}} >
         {loading && <Typography>Loading companies data...</Typography>}
         {error && (
           <Typography color="error" sx={{ mt: 2 }}>
