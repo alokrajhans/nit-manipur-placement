@@ -45,13 +45,13 @@ const Navbar = () => {
   }, [router]);
 
   const Logo = () => (
-    <Box ml={-1} mt={1} mr={1} sx={{ [media.st]: { ml: -2 } }}>
+    <Box ml={-1} mt={1} mr={1} sx={{ [media.st]: { ml: -1, mt: 0.5 } }}>
       <Link href="/" passHref>
         <Image
           src="/logo.png"
           alt="Logo"
-          width={40}
-          height={40}
+          width={isMobile ? 25 : 40}
+          height={isMobile ? 25 : 40}
           style={{ cursor: "pointer", filter: "drop-shadow(0 0 2px white)" }}
         />
       </Link>
@@ -95,37 +95,77 @@ const Navbar = () => {
             }}
           >
             {/* Menu Button */}
-            <IconButton edge="start"  color="inherit" aria-label="menu" onClick={handleMenuOpen}>
-              {Boolean(anchorEl)? <CloseIcon />:<MenuIcon />}
-              
+            <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleMenuOpen}>
+              {Boolean(anchorEl) ? <CloseIcon /> : <MenuIcon />}
+
             </IconButton>
 
             {/* Menu Dropdown */}
-            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              PaperProps={{
+                sx: {
+                  backgroundColor: "black", // dark background
+                  color: "white",           // text color
+                  borderRadius: 2,
+                  mt: 1,
+                  width: "50vw",              // better for mobile
+                  maxWidth: 300,
+                  boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.5)",
+                },
+              }}
+              transformOrigin={{ horizontal: 'center', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+            >
               {navItems.map((item, index) => (
-                <MenuItem key={index} onClick={() => {handleMenuClose(); handleProtectedNavigation(item.path);}}>
+                <MenuItem
+                  key={index}
+                  onClick={() => {
+                    handleMenuClose();
+                    handleProtectedNavigation(item.path);
+                  }}
+                  sx={{
+                    py: 1.5,
+                    fontWeight: 500,
+                    fontSize: "1rem",
+                    color: "#ffffff",
+                    borderBottom: index < navItems.length - 1 ? "1px solid #2a2a2a" : "none",
+                    "&:hover": {
+                      backgroundColor: "#1f1f1f",
+                      color: "#00ffd5",
+                    },
+                  }}
+                >
                   {item.label}
                 </MenuItem>
               ))}
             </Menu>
 
+
             {/* Title */}
-            <Typography
-              sx={{
-                flexGrow: 1,
-                textAlign: "center",
-                fontSize: "20px",
-                fontWeight: "bold",
-              }}
-            >
-              Placement Portal
-            </Typography>
+            <Box display={"flex"}>
+
+              <Logo />
+              <Typography
+                sx={{
+                  flexGrow: 1,
+                  textAlign: "center",
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                }}
+              >
+                Placement Portal
+              </Typography>
+            </Box>
 
             {/* Logout Button */}
             <IconButton color="inherit" onClick={handleLogout}>
               <LogoutIcon />
             </IconButton>
-          </Box>       </>
+          </Box>
+        </>
       ) : (
 
         <Box

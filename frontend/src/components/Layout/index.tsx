@@ -4,8 +4,9 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Footer from "../footer";
-import { Container, Box } from "@mui/material";
+import { Container, Box, useMediaQuery } from "@mui/material";
 import Navbar from "../Navbar";
+import PullToRefreshBanner from "../PullToRefreshBanner";
 // import Navbar from "../Navbar";
 
 interface LayoutProps {
@@ -14,6 +15,8 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
+    const isMobile = useMediaQuery("(max-width:460px)");
+  
   const hideNavbarRoutes = ["/login", "/register"];
   const shouldHideNavbar = hideNavbarRoutes.includes(router.pathname);
 
@@ -26,6 +29,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {!shouldHideNavbar && (
         <Container>
           <Navbar />
+          {isMobile && (<PullToRefreshBanner />)}
+
         </Container>
       )}
 

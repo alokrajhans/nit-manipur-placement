@@ -6,6 +6,9 @@ import { OngoingJob, getOngoingJobs } from "@/src/service/ongoingJobs";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/src/components/hooks";
 import { media } from "@/src/utils/breakpoints";
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import PullToRefreshBanner from "@/src/components/PullToRefreshBanner";
 
 // Helper mappings
 function mapJobType(type?: string): "IT" | "Core" {
@@ -30,7 +33,10 @@ function mapBacklog(backlog?: string): "No Active Backlog" | "No History Backlog
 }
 
 
+
 export default function OngoingJobsPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery("(max-width:460px)");
   const [jobs, setJobs] = useState<OngoingJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +45,25 @@ export default function OngoingJobsPage() {
 
   const router = useRouter();
   const { role, enrollment_number } = useAppSelector((state) => state.user);
+
+  
+
+
+useEffect(() => {
+  if (!isMobile) return;
+
+  const handleScroll = () => {
+    if (window.scrollY === 0) {
+      // User is at top of page
+      console.log("At top - refreshing");
+      window.location.reload(); // Or call fetchJobs()
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [isMobile]);
+
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("jwtToken") : null;
@@ -79,6 +104,8 @@ export default function OngoingJobsPage() {
   }
 
   const showAddJob = role !== 2 && (roleD === 0 || roleD === 1);
+
+  
 
   return (
     <Container >
