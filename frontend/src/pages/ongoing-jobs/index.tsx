@@ -99,9 +99,9 @@ useEffect(() => {
     fetchJobs();
   }, [router, role, enrollment_number]);
 
-  if (checkingAuth) {
-    return <Typography>Checking authentication...</Typography>;
-  }
+  // if (checkingAuth) {
+  //   return <Typography>Checking authentication...</Typography>;
+  // }
 
   const showAddJob = role !== 2 && (roleD === 0 || roleD === 1);
 

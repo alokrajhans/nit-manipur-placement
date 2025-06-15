@@ -134,7 +134,7 @@ const Navbar = () => {
                     borderBottom: index < navItems.length - 1 ? "1px solid #2a2a2a" : "none",
                     "&:hover": {
                       backgroundColor: "#1f1f1f",
-                      color: "#00ffd5",
+                      color: "#388e3c",
                     },
                   }}
                 >
