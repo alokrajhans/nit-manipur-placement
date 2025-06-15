@@ -384,21 +384,61 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
                   label: "Type",
                   value: (
                     <>
-                      {jobType} | <strong>Opportunity:</strong> {opportunityType}
+                      {jobType} & <strong>Opportunity:</strong> {opportunityType}
                     </>
                   ),
                 },
-                { label: "Branches Eligible", value: branchEligible.join(", ") },
-                { label: "Courses Eligible", value: courseEligible.join(", ") },
-                { label: "Min CGPA", value: minCGPA },
-                { label: "10th % | 12th %", value: `${minClass10}% | ${minClass12}%` },
-                { label: "Deadline", value: new Date(deadline).toLocaleDateString() },
-                { label: "Bond", value: bond },
-                { label: "Stipend", value: stipend ? `₹${stipend}` : "N/A" },
-                { label: "Package", value: `₹${pkg} LPA` },
-                { label: "Handle By", value: handleBy },
-                { label: "Backlog", value: backlog },
-                { label: "Remarks", value: remarks },
+                {
+                  label: "Branches Eligible",
+                  value: branchEligible.join(", "),
+                },
+                {
+                  label: "Courses Eligible",
+                  value: courseEligible.join(", "),
+                },
+                {
+                  label: "Min CGPA",
+                  value: (
+                    <>
+                      {minCGPA} & <strong>Deadline:</strong> {new Date(deadline).toLocaleDateString()}
+                    </>
+                  ),
+                },
+                {
+                  label: "10th %",
+                  value: (
+                    <>
+                      {minClass10}% & <strong>12th:</strong> {minClass12}%
+                    </>
+                  ),
+                },
+                {
+                  label: "Bond",
+                  value: (
+                    <>
+                      {bond} & <strong>Handle By:</strong> {handleBy}
+                    </>
+                  ),
+                },
+                {
+                  label: "Stipend",
+                  value: stipend ? (
+                    <>
+                      ₹{stipend} & <strong>Package:</strong> ₹{pkg} LPA
+                    </>
+                  ) : (
+                    "N/A"
+                  ),
+                },
+                {
+                  label: "Backlog",
+                  value: backlog,
+                },
+                {
+                  label: "Remarks",
+                  value: remarks,
+                }
+
               ]
                 .filter((item) => item.value !== null)
                 .map((item, index) => (
