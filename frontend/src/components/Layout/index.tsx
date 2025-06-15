@@ -29,7 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {!shouldHideNavbar && (
         <Container>
           <Navbar />
-          {isMobile && (<PullToRefreshBanner />)}
+          {/* {isMobile && (<PullToRefreshBanner />)} */}
 
         </Container>
       )}
