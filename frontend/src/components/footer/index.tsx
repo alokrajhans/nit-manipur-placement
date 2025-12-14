@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          &copy; {new Date().getFullYear()} Alok Raj Hans. All rights reserved.{" "}
+          &copy; {new Date().getFullYear()} Deeksha Singh. All rights reserved.{" "}
           <Link href="/rules" underline="hover">
             Rules of Placement.
           </Link>
