@@ -3,8 +3,9 @@ import { useRouter } from "next/router";
 
 export default function LandingPage() {
   const router = useRouter();
-   
+   useeffect(() => {
     router.replace("/login"); // redirect to /login
+     }, [router]);
   
   return (
     // <Container sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "245%", alignItems: 'stretch', mr: "20px" } }}>
