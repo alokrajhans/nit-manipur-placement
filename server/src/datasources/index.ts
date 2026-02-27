@@ -1,2 +1,4 @@
 export * from './sqlite.datasource';
-export * from './mysql.datasource';
+
+// MySQL datasource is imported lazily to prevent auto-connection on startup
+// when using SQLite (the default database)

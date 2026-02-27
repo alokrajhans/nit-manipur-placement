@@ -30,6 +30,12 @@ export async function migrate(args: string[]) {
   const existingSchema = args.includes('--rebuild') ? 'drop' : 'alter';
   console.log('Running migrations...');
   console.log(`Schema mode: ${existingSchema}`);
+  
+  const useExternalDb = process.env.USE_EXTERNAL_DB === 'true';
+  if (useExternalDb) {
+    console.log('⚠️  Using external MySQL database - run migrations on your MySQL server');
+    process.exit(0);
+  }
 
   const app = new MigrationApplication();
   await app.boot();

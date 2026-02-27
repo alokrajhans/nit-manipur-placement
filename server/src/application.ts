@@ -19,7 +19,7 @@ import { UserRepository } from './repositories/user.repository';
 import { AppliedJobsRepository } from './repositories/applied-jobs.repository';
 
 // Datasource
-import { SqliteDataSource, MysqlDataSource } from './datasources';
+import { SqliteDataSource } from './datasources';
 
 // Auth
 import { AuthenticationComponent, registerAuthenticationStrategy } from '@loopback/authentication';
@@ -78,19 +78,22 @@ export class ServerApplication extends BootMixin(
       },
     };
 
-    // Bind datasources (SQLite by default, MySQL optional)
-    const dbType = process.env.DB_TYPE || 'sqlite';
+    // Bind datasources
+    // Default: SQLite (no external database needed)
+    // Switch: Set USE_EXTERNAL_DB=true to use external MySQL database
+    const useExternalDb = process.env.USE_EXTERNAL_DB === 'true';
     
-    if (dbType === 'mysql') {
-      // Use MySQL if explicitly set
+    if (useExternalDb) {
+      // Use external MySQL database if explicitly enabled
+      const { MysqlDataSource } = require('./datasources/mysql.datasource');
       this.bind('datasources.MysqlDataSource').toClass(MysqlDataSource);
       this.dataSource(MysqlDataSource);
-      console.log('📊 Using MySQL database');
+      console.log('📊 Using MySQL database (external)');
     } else {
-      // Use SQLite by default (lightweight, no external dependency)
+      // Use SQLite by default (lightweight, no external dependency needed)
       this.bind('datasources.SqliteDataSource').toClass(SqliteDataSource);
       this.dataSource(SqliteDataSource);
-      console.log('📊 Using SQLite database');
+      console.log('📊 Using SQLite database (default - no external DB needed)');
     }
 
     // Bind repositories
@@ -126,8 +129,8 @@ export class ServerApplication extends BootMixin(
    * Method to auto migrate database schema on app start
    */
   async migrateSchema(options?: { existingSchema?: 'drop' | 'alter' }) {
-    const dbType = process.env.DB_TYPE || 'sqlite';
-    const dsKey = dbType === 'mysql' ? 'datasources.MysqlDataSource' : 'datasources.SqliteDataSource';
+    const useExternalDb = process.env.USE_EXTERNAL_DB === 'true';
+    const dsKey = useExternalDb ? 'datasources.MysqlDataSource' : 'datasources.SqliteDataSource';
     const ds = await this.get(dsKey) as any;
 
     if (options?.existingSchema === 'drop') {
