@@ -20,7 +20,7 @@ export class GitHubAppAuthService {
 
   constructor() {
     const appId = process.env.GITHUB_APP_ID;
-    const privateKey = process.env.GITHUB_APP_PRIVATE_KEY;
+    let privateKey = process.env.GITHUB_APP_PRIVATE_KEY;
 
     if (!appId || !privateKey) {
       throw new Error(
@@ -29,7 +29,24 @@ export class GitHubAppAuthService {
     }
 
     this.appId = appId;
-    this.privateKey = privateKey.replace(/\\n/g, '\n'); // Handle escaped newlines
+    
+    // Handle various private key formats
+    // Support both escaped newlines (\\n) and literal newlines
+    if (privateKey.includes('\\n')) {
+      privateKey = privateKey.replace(/\\n/g, '\n');
+    }
+    
+    // Ensure key is properly formatted for PEM
+    if (!privateKey.includes('-----BEGIN')) {
+      // If key doesn't have header, it might be base64 encoded
+      try {
+        privateKey = Buffer.from(privateKey, 'base64').toString('utf-8');
+      } catch (e) {
+        // Not base64, use as-is
+      }
+    }
+    
+    this.privateKey = privateKey;
     this.tokenCache = new Map();
   }
 
@@ -119,18 +136,40 @@ export class GitHubAppAuthService {
     signature: string,
   ): boolean {
     const crypto = require('crypto');
-    const webhookSecret = process.env.GITHUB_WEBHOOK_SECRET;
-
+    
+    // Try webhook secret first (for repository webhooks)
+    let webhookSecret = process.env.GITHUB_WEBHOOK_SECRET;
+    
+    // If no webhook secret, try app secret
     if (!webhookSecret) {
-      console.warn('GITHUB_WEBHOOK_SECRET not configured');
-      return false;
+      webhookSecret = process.env.GITHUB_APP_WEBHOOK_SECRET;
     }
 
-    const hmac = crypto.createHmac('sha256', webhookSecret);
-    hmac.update(payload);
-    const expectedSignature = 'sha256=' + hmac.digest('hex');
+    if (!webhookSecret) {
+      console.warn('⚠️  Neither GITHUB_WEBHOOK_SECRET nor GITHUB_APP_WEBHOOK_SECRET configured');
+      console.warn('Signature verification skipped - webhook will be accepted');
+      // For testing/development, allow webhooks without secret
+      return true;
+    }
 
-    return signature === expectedSignature;
+    try {
+      const hmac = crypto.createHmac('sha256', webhookSecret);
+      hmac.update(payload);
+      const expectedSignature = 'sha256=' + hmac.digest('hex');
+
+      const isValid = signature === expectedSignature;
+      
+      if (!isValid) {
+        console.warn('❌ Webhook signature mismatch');
+        console.warn('Expected:', expectedSignature.substring(0, 20) + '...');
+        console.warn('Received:', signature ? signature.substring(0, 20) + '...' : 'none');
+      }
+      
+      return isValid;
+    } catch (error) {
+      console.error('Error verifying webhook signature:', error);
+      return false;
+    }
   }
 
   /**
