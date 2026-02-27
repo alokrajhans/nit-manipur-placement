@@ -18,6 +18,7 @@ import {
   patchInterestedStudent,
   postInterestedStudent,
 } from "@/src/service/interestedStudents";
+import { media } from "@/src/utils/breakpoints";
 
 // Match your backend enum/values exactly here if possible
 const Branches = ["CSE", "ECE", "EE", "ME", "CE"];
@@ -181,12 +182,12 @@ export default function MyProfile() {
   }, []);
 
   return (
-    <Container>
+    <Container sx={{[media.st] :{ color:"primary",backgroundColor:"background.default",width:"100%", alignItems: 'stretch',mr:"20px"}}}>
       {/* <Box>
         <Navbar />
       </Box> */}
       <Box sx={{ p: 3 }}>
-        <Paper elevation={3} sx={{ p: 4, backgroundColor: "#1e1e1e", color: "#fff" }}>
+        <Paper elevation={3} sx={{ p: 4, backgroundColor: "#1e1e1e", color: "#fff"}}>
           <Typography variant="h5" gutterBottom>
             My Profile
           </Typography>

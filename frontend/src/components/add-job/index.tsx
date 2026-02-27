@@ -170,17 +170,16 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
       // Optionally display error to user
     }
   };
-  const handleBranchesChange = (event: SelectChangeEvent<string[]>) => {
-    const {
-      target: { value },
-    } = event;
-    setBranchesEligible(typeof value === "string" ? value.split(",") : value);
-  };
-
-  const handleCoursesChange = (event: SelectChangeEvent<string[]>) => {
-    const value = event.target.value;
-    setCoursesEligible(typeof value === "string" ? value.split(",") : value);
-  };
+const handleBranchesChange = (event: SelectChangeEvent<string[]>) => {
+  const {
+    target: { value },
+  } = event;
+  setBranchesEligible(typeof value === "string" ? value.split(",") : value);
+};
+const handleCoursesChange = (event: SelectChangeEvent<string[]>) => {
+  const value = event.target.value;
+  setCoursesEligible(typeof value === "string" ? value.split(",") : value);
+};
 
   return (
     <>
@@ -432,7 +431,7 @@ const AddJobDialog: React.FC<AddJobDialogProps> = ({ onSubmit }) => {
                 />
               </Grid>
               {/* Package */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} >
                 <TextField
                   label="Package (LPA)"
                   fullWidth

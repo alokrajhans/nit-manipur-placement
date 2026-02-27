@@ -28,6 +28,7 @@ import {
 import { AppliedJob, getAllAppliedJobs } from "@/src/service/appliedJobs";
 import { getOngoingJobs, OngoingJob } from "@/src/service/ongoingJobs";
 import ShowIfAdmin from "@/src/components/ShowIfAdmin";
+import { media } from "@/src/utils/breakpoints";
 
 export default function AppliedJobsPage() {
   const [interestedStudents, setInterestedStudents] = useState<
@@ -48,13 +49,13 @@ export default function AppliedJobsPage() {
       const enrollment = candidate.enrollment_number.trim();
       const key = `${company}_${enrollment}`;
       if (seen.has(key)) {
-        console.log("Duplicate found and removed:", candidate);
+        // console.log("Duplicate found and removed:", candidate);
         return false;
       }
       seen.add(key);
       return true;
     });
-    console.log("Filtered unique candidates count:", filtered.length);
+    // console.log("Filtered unique candidates count:", filtered.length);
     return filtered;
   };
 
@@ -145,7 +146,7 @@ export default function AppliedJobsPage() {
   );
 
   return (
-    <Container>
+    <Container sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "100%", alignItems: 'stretch', mr: "20px" } }}>
       {/* <Box>
         <Navbar />
       </Box> */}

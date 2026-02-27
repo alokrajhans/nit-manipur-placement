@@ -11,7 +11,7 @@ export interface AppliedJob {
 export const createAppliedJob = async (
   data: Partial<AppliedJob>
 ): Promise<{ message: string }> => {
-  console.log("ye Le", data);
+  // console.log("ye Le", data);
   const res = await apiClient.post("/applied-jobs", data);
   return res.data;
 };

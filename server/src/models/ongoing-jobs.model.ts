@@ -16,6 +16,9 @@ export class OngoingJobs extends Entity {
   job_title?: string;
 
   @property({type: 'string'})
+  backlog?: string;
+
+  @property({type: 'string'})
   type?: string;
 
   @property({type: 'string'})

@@ -18,6 +18,7 @@ import {
 } from "recharts";
 import { getInterestedStudents } from "@/src/service/interestedStudents";
 import { getSelectedStudents } from "@/src/service/selectedStudents";
+import { media } from "@/src/utils/breakpoints";
 
 const COLORS = ["#0088FE", "#00C49F"];
 
@@ -73,26 +74,41 @@ export default function AnalyticsPage() {
   const notPlaced = totalInterested - totalPlaced;
 
   return (
-    <Container>
+    <Container sx={{ [media.st]: { color: "primary", backgroundColor: "background.default", width: "100%", alignItems: 'stretch', mr: "20px",mt:"-30px" } }}>
       {/* <Box>
         <Navbar />
       </Box> */}
-      <Grid container spacing={4} mt={4}>
-        <Grid item xs={12} md={4}>
+      <Grid container spacing={4} mt={4} sx={{ [media.st]: { flexWrap: "nowrap" } }}>
+        <Grid item xs={12} md={4} sx={{
+          [media.st]: {
+            flexBasis: "33.33%",
+            maxWidth: "33.33%",
+          },
+        }}>
           <Paper sx={{ p: 2, backgroundColor: "#1e1e1e", color: "#fff" }}>
             <Typography variant="h6">Total Job Offers</Typography>
             <Typography variant="h4">{totalOffers}</Typography>
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={4} sx={{
+          [media.st]: {
+            flexBasis: "33.33%",
+            maxWidth: "33.33%",
+          },
+        }}>
           <Paper sx={{ p: 2, backgroundColor: "#1e1e1e", color: "#fff" }}>
             <Typography variant="h6">Students Placed</Typography>
             <Typography variant="h4">{totalPlaced}</Typography>
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={4} sx={{
+          [media.st]: {
+            flexBasis: "33.33%",
+            maxWidth: "33.33%",
+          },
+        }}>
           <Paper sx={{ p: 2, backgroundColor: "#1e1e1e", color: "#fff" }}>
             <Typography variant="h6">Total Interested Students</Typography>
             <Typography variant="h4">{totalInterested}</Typography>
@@ -104,18 +120,16 @@ export default function AnalyticsPage() {
         Placement Analytics
       </Typography>
 
-      <Grid container spacing={4}>
+      <Grid container spacing={2} wrap="nowrap" sx={{ overflowX: 'auto' }}>
         {branchData.map((branch) => {
           const percentage = branch.interested
             ? ((branch.placed / branch.interested) * 100).toFixed(1)
             : "0.0";
           return (
-            <Grid item xs={12} md={6} lg={4} key={branch.branch}>
-              <Paper sx={{ p: 2, backgroundColor: "#1e1e1e", color: "#fff" }}>
+            <Grid item xs="auto" key={branch.branch} ml={"15px"} >
+              <Paper sx={{ p: 2, minWidth: 200, backgroundColor: "#1e1e1e", color: "#fff" }}>
                 <Typography variant="h6">{branch.branch}</Typography>
-                <Typography>
-                  Interested Students: {branch.interested}
-                </Typography>
+                <Typography>Interested Students: {branch.interested}</Typography>
                 <Typography>Placed Students: {branch.placed}</Typography>
                 <Typography>Placement %: {percentage}%</Typography>
               </Paper>
@@ -123,6 +137,7 @@ export default function AnalyticsPage() {
           );
         })}
       </Grid>
+
 
       <Typography variant="h5" mt={6} mb={2}>
         Branch-wise Placement Chart

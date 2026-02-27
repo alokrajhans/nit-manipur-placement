@@ -5,6 +5,10 @@ import { Container, Box, Typography } from "@mui/material";
 import { OngoingJob, getOngoingJobs } from "@/src/service/ongoingJobs";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/src/components/hooks";
+import { media } from "@/src/utils/breakpoints";
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import PullToRefreshBanner from "@/src/components/PullToRefreshBanner";
 
 // Helper mappings
 function mapJobType(type?: string): "IT" | "Core" {
@@ -29,7 +33,10 @@ function mapBacklog(backlog?: string): "No Active Backlog" | "No History Backlog
 }
 
 
+
 export default function OngoingJobsPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery("(max-width:460px)");
   const [jobs, setJobs] = useState<OngoingJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +45,25 @@ export default function OngoingJobsPage() {
 
   const router = useRouter();
   const { role, enrollment_number } = useAppSelector((state) => state.user);
+
+  
+
+
+useEffect(() => {
+  if (!isMobile) return;
+
+  const handleScroll = () => {
+    if (window.scrollY === 0) {
+      // User is at top of page
+      console.log("At top - refreshing");
+      window.location.reload(); // Or call fetchJobs()
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [isMobile]);
+
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("jwtToken") : null;
@@ -73,21 +99,23 @@ export default function OngoingJobsPage() {
     fetchJobs();
   }, [router, role, enrollment_number]);
 
-  if (checkingAuth) {
-    return <Typography>Checking authentication...</Typography>;
-  }
+  // if (checkingAuth) {
+  //   return <Typography>Checking authentication...</Typography>;
+  // }
 
   const showAddJob = role !== 2 && (roleD === 0 || roleD === 1);
 
+  
+
   return (
-    <Container>
+    <Container >
       {showAddJob && (
         <Box mt={2}>
           <AddJobDialog />
         </Box>
       )}
 
-      <Box mt={3}>
+      <Box mt={3} sx={{ [media.st]: { minWidth: "100px" } }}>
         {loading && <Typography>Loading jobs...</Typography>}
         {error && <Typography color="error">{error}</Typography>}
         {!loading && !error && jobs.length === 0 && (
@@ -105,21 +133,21 @@ export default function OngoingJobsPage() {
               branchEligible={
                 job.Branch
                   ? (job.Branch.split(",").map((b) => b.trim()) as (
-                      | "CSE"
-                      | "ECE"
-                      | "EE"
-                      | "ME"
-                      | "CE"
-                    )[])
+                    | "CSE"
+                    | "ECE"
+                    | "EE"
+                    | "ME"
+                    | "CE"
+                  )[])
                   : []
               }
               courseEligible={
                 job.Course
                   ? (job.Course.split(",").map((c) => c.trim()) as (
-                      | "B.Tech"
-                      | "M.Tech"
-                      | "M.Sc"
-                    )[])
+                    | "B.Tech"
+                    | "M.Tech"
+                    | "M.Sc"
+                  )[])
                   : []
               }
               minCGPA={job.min_cgpa ?? 0}
@@ -135,6 +163,7 @@ export default function OngoingJobsPage() {
               jobDescriptionLink={job.jobDescriptionLink ?? ""}
               remarks={job.remarks ?? ""}
               handleBy={job.handleBy ?? ""}
+              isApplied={job.isApplied}
             />
           ))}
       </Box>

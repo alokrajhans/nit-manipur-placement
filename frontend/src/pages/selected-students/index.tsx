@@ -20,6 +20,7 @@ import Navbar from "@/src/components/Navbar";
 import StudentSelection from "@/src/components/studentSelection";
 import { getSelectedStudents, SelectedStudent } from "@/src/service/selectedStudents";
 import ShowIfAdmin from "@/src/components/ShowIfAdmin";
+import { media } from "@/src/utils/breakpoints";
 
 interface JobOffer {
   companyName: string;
@@ -138,7 +139,7 @@ export default function SelectedStudentsPage() {
         <Navbar />
       </Box> */}
 
-      <Box mt={4}>
+      <Box mt={4} sx={{[media.st] :{ color:"primary",backgroundColor:"background.default",width:"100%", alignItems: 'stretch',mr:"20px"}}}>
         <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={2}>
           <Typography variant="h4" gutterBottom>
             Selected Students

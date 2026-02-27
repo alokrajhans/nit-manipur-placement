@@ -9,6 +9,8 @@ import {
   Tooltip,
   IconButton,
   Grid,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -20,6 +22,7 @@ import {
   getAllAppliedJobs,
 } from "@/src/service/appliedJobs";
 import { getInterestedStudentByEnrollment } from "@/src/service/interestedStudents";
+import { media } from "@/src/utils/breakpoints";
 
 
 // const [alreadyApplied, setAlreadyApplied] = useState(false);
@@ -39,9 +42,10 @@ type JobBarTileProps = {
   package: string;
   jobId: string;
   jobDescriptionLink: string;
-  backlog:("No Active Backlog" | "No History Backlog" | "No Critera for Backlog") ;
+  backlog: ("No Active Backlog" | "No History Backlog" | "No Critera for Backlog");
   handleBy: string;
   remarks?: string;
+  isApplied: number;
 };
 const JobBarTile: React.FC<JobBarTileProps> = ({
   companyName,
@@ -62,15 +66,18 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
   jobDescriptionLink,
   handleBy,
   remarks,
+  isApplied,
 }) => {
   const [alreadyApplied, setAlreadyApplied] = useState(false);
   const [studentFound, setStudentFound] = useState<boolean | null>(null); // ✅ move here
   const alertShownRef = useRef(false);
+  const isMobile = useMediaQuery("(max-width:460px)");
 
 
-  const jobLink = `${
-    typeof window !== "undefined" ? window.location.origin : ""
-  }/jobs/${jobId}`;
+
+
+  const jobLink = `${typeof window !== "undefined" ? window.location.origin : ""
+    }/jobs/${jobId}`;
 
   const handleCopyJSON = async () => {
     const jobData = {
@@ -119,43 +126,34 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
 
       try {
         // Check if user is interested student
-        try {
-          const res = await getInterestedStudentByEnrollment(Number(enrollmentNumber));
-          if (res) {
-            setStudentFound(true);
-          } else {
-           
-            setStudentFound(false);
-          }
-          
-          console.log("222",res);
-          console.log("111",studentFound);
-        } catch (error) {
-          console.error("Error fetching interested student", error);
+        const res = await getInterestedStudentByEnrollment(Number(enrollmentNumber));
+        if (res) {
+          setStudentFound(true);
+        } else {
           setStudentFound(false);
         }
-        
-        
-
-        // Check if already applied
-        const appliedJobs = await getAllAppliedJobs();
-        const hasApplied = appliedJobs.some(
-          (job) =>
-            job.enrollment_number === enrollmentNumber &&
-            job.company_name === companyName
-        );
-        setAlreadyApplied(hasApplied);
       } catch (error) {
-        console.error("Error checking applied status", error);
         setStudentFound(false);
       }
+
+      // ✅ Set alreadyApplied using prop
+      setAlreadyApplied(isApplied === 1);
     };
 
     checkApplied();
-  }, [companyName]);
+  }, [isApplied]);
+
 
   const handleApply = async () => {
-    if (alreadyApplied || !studentFound) return;
+    if (alreadyApplied) {
+      alert("You have already applied")
+      return;
+    }
+    else if (!studentFound) {
+      alert("Please fill your profile!")
+      window.location.href = "/myProfile";
+      return;
+    };
 
     const enrollmentNumber =
       typeof window !== "undefined"
@@ -188,12 +186,13 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
       !(window as any).__alertShownThisLoad
     ) {
       alert("Please fill your details in My Profile section!");
+      window.location.href = "/myProfile";
       alertShownRef.current = true;
       (window as any).__alertShownThisLoad = true;
     }
   }, [studentFound]);
-  
-  
+
+
   return (
     <Card
       sx={{
@@ -207,166 +206,297 @@ const JobBarTile: React.FC<JobBarTileProps> = ({
         },
       }}
     >
-      <CardContent>
-        <Grid container spacing={2}>
-          {/* Left content */}
-          <Grid item xs={12} md={9}>
-            <Grid container spacing={2}>
-              {/* First Column */}
-              {/* <Grid item xs={12} sm={6} mr={"90px"}> */}
-              <Grid item xs={12} sm={6} ml={"10px"}>
-                <Typography variant="h6" gutterBottom>
-                  {companyName} - {jobTitle}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Type:</strong> {jobType} |{" "}
-                  <strong>Opportunity:</strong> {opportunityType}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Branches Eligible:</strong>{" "}
-                  {branchEligible.join(", ")}
-                </Typography>
-                
-              </Grid>
+      {!isMobile && (
 
-              <Grid item xs={12} sm={6} mt={"8px"}>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Courses Eligible:</strong> {courseEligible.join(", ")}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Min CGPA:</strong> {minCGPA}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>10th %:</strong> {minClass10}% |{" "}
-                  <strong>12th %:</strong> {minClass12}%
-                </Typography>
-              </Grid>
-              
+        <CardContent>
+          <Grid container spacing={isMobile ? 7 : 2}>
+            {/* 1st to 4th Columns: Job Info */}
+            {(() => {
+              const data = [
+                { label: "Company & Role", value: `${companyName} - ${jobTitle}` },
+                {
+                  label: "Type",
+                  value: (
+                    <>
+                      {jobType} | <strong>Opportunity:</strong> {opportunityType}
+                    </>
+                  )
+                }, { label: "Branches Eligible", value: branchEligible.join(", ") },
+                { label: "Min CGPA", value: minCGPA },
+                { label: "10th % | 12th %", value: `${minClass10}% | ${minClass12}%` },
+                { label: "Deadline", value: new Date(deadline).toLocaleDateString() },
+                { label: "Bond", value: bond },
+                { label: "Stipend", value: stipend ? `₹${stipend}` : "N/A" },
+                { label: "Package", value: `₹${pkg} LPA` },
+                { label: "Handle By", value: handleBy },
+                { label: "Backlog", value: backlog },
+                { label: "Remarks", value: remarks },
+              ].filter(item => item.value !== null);
 
-              <Grid item xs={12} sm={6} mt={"8px"}>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Deadline:</strong>{" "}
-                  {new Date(deadline).toLocaleDateString()}
-                </Typography>
+              // Manually split into 4 columns, inserting "Courses Eligible" in column 2
+              const columnData = [
+                data.slice(0, 3), // Column 1
+                [data[3], { label: "Courses Eligible", value: courseEligible.join(", ") }, ...data.slice(4, 6)], // Column 2 (5 items)
+                data.slice(6, 9), // Column 3
+                data.slice(9),    // Column 4
+              ];
 
-                <Typography variant="body2" gutterBottom>
-                  <strong>Bond:</strong> {bond}
-                </Typography>
-               
-                {stipend && (
-                  <Typography variant="body2" gutterBottom>
-                    <strong>Stipend:</strong> ₹{stipend}
-                  </Typography>
-                )}
-              </Grid>
+              return columnData.map((column, idx) => (
+                <Grid item xs={12} sm={6} md={2} key={idx} sx={{ [media.st]: { flexBasis: '20%', maxWidth: '20%' } }}>
+                  {column.map((item, index) => (
+                    <Typography variant="body2" gutterBottom key={index}>
+                      <strong>{item.label}:</strong> {item.value}
+                    </Typography>
+                  ))}
+                </Grid>
+              ));
+            })()}
+
+            {/* 5th Column: Icons */}
+            <Grid item xs={12} sm={6} md={2} sx={{
+              [media.st]: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 1,
+                flexBasis: '20%',
+                maxWidth: '20%',
+              },
+            }}>
               <Grid
-                item
-                xs={12}
-                sm={6}
-                mt={"8px"}
-                mr={"10px"}
-                maxWidth={"200px"}
-                minWidth={"190px"}
+                container
+                direction="column"
+                justifyContent="flex-start"
+                alignItems="center"
+                spacing={2}
+                sx={{ [media.st]: { flex: 1, mt: "-70px" } }}
               >
-                <Typography variant="body2" gutterBottom>
-                  <strong>Package:</strong> ₹{pkg} LPA
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Handle By:</strong> {handleBy}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  <strong>Backlog:</strong> {backlog}
-                </Typography>
-                {remarks && (
-                  <Typography variant="body2" gutterBottom>
-                    <strong>Remarks:</strong> {remarks}
-                  </Typography>
-                )}
+                <Grid item>
+                  <Tooltip title="Copy Job Data">
+                    <IconButton onClick={handleCopyJSON} color="primary">
+                      <ContentCopyIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+                <Grid item>
+                  <Tooltip title="View Job Description">
+                    <IconButton onClick={handleViewPDF} color="info">
+                      <DescriptionIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </Grid>
+            </Grid>
+            {/* 6th Column: Apply Button */}
+            <Grid item xs={12} sm={6} md={2} >
+              <Grid container direction="column" alignItems="center" sx={{
+                [media.st]: { alignItems: "flex-end", mt: "-50px" }
+              }}>
+                <Grid item>
+                  {/* <Button
+                  variant="contained"
+                  disabled={alreadyApplied || studentFound === false}
+                  onClick={handleApply}
+                  endIcon={<SendIcon />}
+                  sx={{
+                    fontSize: "0.8rem",
+                    padding: "4px 10px",
+                    minWidth: "80px",
+                    backgroundColor:
+                      alreadyApplied || studentFound === false
+                        ? "#d3d3d3"
+                        : "success.main",
+                    color:
+                      alreadyApplied || studentFound === false ? "#black" : "fff",
+                    cursor:
+                      alreadyApplied || studentFound === false
+                        ? "not-allowed"
+                        : "pointer",
+                    "&:hover": {
+                      backgroundColor:
+                        alreadyApplied || studentFound === false
+                          ? "#d3d3d3"
+                          : "success.dark",
+                    },
+                  }}
+                  title={
+                    studentFound === false
+                      ? "You must be an interested student to apply"
+                      : alreadyApplied
+                        ? "You have already applied"
+                        : ""
+                  }
+                >
+                  {alreadyApplied
+                    ? "Applied"
+                    : studentFound === false
+                      ? "My Profile not filled"
+                      : "Apply"}
+                </Button> */}
+                  <Button
+                    variant="contained"
+                    // disabled={alreadyApplied || studentFound === false}
+                    onClick={handleApply}
+                    endIcon={<SendIcon />}
+                    sx={{
+                      fontSize: "0.8rem",
+                      padding: "4px 10px",
+                      minWidth: "80px",
+                      backgroundColor:
+                        "success.main",
+                      color:
+                        "fff",
+                      cursor:
+                        "pointer",
+                      "&:hover": {
+                        backgroundColor:
+                          "success.dark",
+                      },
+                    }}
+                    title={
+                      studentFound === false
+                        ? "You must be an interested student to apply"
+                        : alreadyApplied
+                          ? "You have already applied"
+                          : ""
+                    }
+                  >
+                    {"Apply"}
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
 
-          {/* Right: Buttons */}
-          <Grid
-            container
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: 2, // space between icons and button container
-              width: "100%",
-              mt: "-100px",
-            }}
-          >
-            <Grid
-              item
-              xs="auto"
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <Tooltip title="Copy Job Link">
+
+
+
+
+        </CardContent>
+      )}
+      {isMobile && (
+        <CardContent>
+          <Grid container>
+            <Grid item xs={12}>
+              {[
+                { label: "Company & Role", value: `${companyName} - ${jobTitle}` },
+                {
+                  label: "Type",
+                  value: (
+                    <>
+                      {jobType} & <strong>Opportunity:</strong> {opportunityType}
+                    </>
+                  ),
+                },
+                {
+                  label: "Branches Eligible",
+                  value: branchEligible.join(", "),
+                },
+                {
+                  label: "Courses Eligible",
+                  value: courseEligible.join(", "),
+                },
+                {
+                  label: "Min CGPA",
+                  value: (
+                    <>
+                      {minCGPA} & <strong>Deadline:</strong> {new Date(deadline).toLocaleDateString()}
+                    </>
+                  ),
+                },
+                {
+                  label: "10th %",
+                  value: (
+                    <>
+                      {minClass10}% & <strong>12th:</strong> {minClass12}%
+                    </>
+                  ),
+                },
+                {
+                  label: "Bond",
+                  value: (
+                    <>
+                      {bond} & <strong>Handle By:</strong> {handleBy}
+                    </>
+                  ),
+                },
+                {
+                  label: "Stipend",
+                  value: stipend ? (
+                    <>
+                      ₹{stipend} & <strong>Package:</strong> ₹{pkg} LPA
+                    </>
+                  ) : (
+                    "N/A"
+                  ),
+                },
+                {
+                  label: "Backlog",
+                  value: backlog,
+                },
+                {
+                  label: "Remarks",
+                  value: remarks,
+                }
+
+              ]
+                .filter((item) => item.value !== null)
+                .map((item, index) => (
+                  <Typography
+                    key={index}
+                    variant="body2"
+                    sx={{ mb: 1, wordBreak: "break-word" }}
+                  >
+                    <strong>{item.label}:</strong> {item.value}
+                  </Typography>
+                ))}
+            </Grid>
+
+            {/* Buttons and Icons */}
+            <Grid item xs={12} sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap" }}>
+              <Tooltip title="Copy Job Data">
                 <IconButton onClick={handleCopyJSON} color="primary">
                   <ContentCopyIcon />
                 </IconButton>
               </Tooltip>
-
               <Tooltip title="View Job Description">
                 <IconButton onClick={handleViewPDF} color="info">
                   <DescriptionIcon />
                 </IconButton>
               </Tooltip>
-            </Grid>
-
-            <Grid item xs="auto">
               <Button
                 variant="contained"
-                disabled={alreadyApplied || studentFound === false}
                 onClick={handleApply}
                 endIcon={<SendIcon />}
                 sx={{
                   fontSize: "0.8rem",
                   padding: "4px 10px",
-                  minWidth: "80px",
-                  backgroundColor:
-                    alreadyApplied || studentFound === false
-                      ? "#d3d3d3"
-                      : "success.main",
-                  color:
-                    alreadyApplied || studentFound === false ? "#000" : "#fff",
-                  cursor:
-                    alreadyApplied || studentFound === false
-                      ? "not-allowed"
-                      : "pointer",
+                  backgroundColor: "success.main",
+                  color: "white",
                   "&:hover": {
-                    backgroundColor:
-                      alreadyApplied || studentFound === false
-                        ? "#d3d3d3"
-                        : "success.dark",
+                    backgroundColor: "success.dark",
                   },
                 }}
                 title={
                   studentFound === false
                     ? "You must be an interested student to apply"
                     : alreadyApplied
-                    ? "You have already applied"
-                    : ""
+                      ? "You have already applied"
+                      : ""
                 }
               >
                 {alreadyApplied
                   ? "Applied"
                   : studentFound === false
-                  ? "My Profile not filled"
-                  : "Apply"}
+                    ? "My Profile not filled"
+                    : "Apply"}
               </Button>
             </Grid>
           </Grid>
-        </Grid>
-      </CardContent>
+        </CardContent>
+
+
+      )}
     </Card>
   );
 };
