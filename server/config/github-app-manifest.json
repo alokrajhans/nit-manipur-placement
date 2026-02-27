@@ -1,0 +1,29 @@
+{
+  "name": "NIT Placement PR Review Bot",
+  "url": "https://github.com/alokrajhans/nit-manipur-placement",
+  "hook_attributes": {
+    "url": "https://your-domain.com/github-app/webhook",
+    "active": true,
+    "events": [
+      "pull_request",
+      "pull_request_review",
+      "pull_request_review_comment"
+    ]
+  },
+  "redirect_url": "https://your-domain.com/github-app/callback",
+  "description": "Automated PR code review using Gemini AI for intelligent feedback on pull requests",
+  "permissions": {
+    "pull_requests": "write",
+    "contents": "read",
+    "metadata": "read",
+    "checks": "write",
+    "statuses": "write"
+  },
+  "events": [
+    "pull_request",
+    "pull_request_review",
+    "pull_request_review_comment"
+  ],
+  "default_events": true,
+  "public": true
+}

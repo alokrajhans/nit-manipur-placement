@@ -1,6 +1,6 @@
 import {DefaultCrudRepository} from '@loopback/repository';
-
-import {MysqlDataSource} from '../datasources';
+import {DataSource} from 'loopback-datasource-juggler';
+import {getDataSourceName} from '../datasources/datasource-helper';
 import {inject} from '@loopback/core';
 import { CompaniesVisited, CompaniesVisitedRelations } from '../models';
 
@@ -10,7 +10,7 @@ export class CompaniesVisitedRepository extends DefaultCrudRepository<
   CompaniesVisitedRelations
 > {
   constructor(
-    @inject('datasources.mysql') dataSource: MysqlDataSource,
+    @inject(getDataSourceName()) dataSource: DataSource,
   ) {
     super(CompaniesVisited, dataSource);
   }

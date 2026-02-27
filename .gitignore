@@ -20,6 +20,11 @@
 /server/node_modules/
 /server/.env
 
+# SQLite database (local development)
+/server/data/*.db
+/server/data/*.db-journal
+!server/data/.gitkeep
+
 # next.js
 /.next/
 /out/

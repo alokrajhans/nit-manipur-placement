@@ -19,7 +19,7 @@ import { UserRepository } from './repositories/user.repository';
 import { AppliedJobsRepository } from './repositories/applied-jobs.repository';
 
 // Datasource
-import { MysqlDataSource } from './datasources';
+import { SqliteDataSource, MysqlDataSource } from './datasources';
 
 // Auth
 import { AuthenticationComponent, registerAuthenticationStrategy } from '@loopback/authentication';
@@ -28,6 +28,16 @@ import { JWTService } from './service/jwt-service';
 import { AuthController } from './controllers/auth.controller';
 import { AppliedJobsController } from './controllers/applied-jobs.controllers';
 import { DeleteExpiredJobsCron } from './cron/deleteExpiredJobs.cron';
+
+// Services
+import { GeminiService } from './services/gemini.service';
+import { GitHubAppAuthService } from './services/github-app-auth.service';
+import { WebhookQueueService } from './services/webhook-queue.service';
+
+// Webhook & GitHub App
+import { WebhookController } from './controllers/webhook.controller';
+import { GitHubAppController } from './controllers/github-app.controller';
+import { HealthController } from './controllers/health.controller';
 
 // ✅ Cron
 // import {DeleteExpiredJobsCron} from './cron/delete-expired-jobs.cron';
@@ -67,9 +77,20 @@ export class ServerApplication extends BootMixin(
       },
     };
 
-    // Bind and configure MySQL datasource
-    this.bind('datasources.MysqlDataSource').toClass(MysqlDataSource);
-    this.dataSource(MysqlDataSource);
+    // Bind datasources (SQLite by default, MySQL optional)
+    const dbType = process.env.DB_TYPE || 'sqlite';
+    
+    if (dbType === 'mysql') {
+      // Use MySQL if explicitly set
+      this.bind('datasources.MysqlDataSource').toClass(MysqlDataSource);
+      this.dataSource(MysqlDataSource);
+      console.log('📊 Using MySQL database');
+    } else {
+      // Use SQLite by default (lightweight, no external dependency)
+      this.bind('datasources.SqliteDataSource').toClass(SqliteDataSource);
+      this.dataSource(SqliteDataSource);
+      console.log('📊 Using SQLite database');
+    }
 
     // Bind repositories
     this.repository(CompaniesVisitedRepository);
@@ -81,12 +102,18 @@ export class ServerApplication extends BootMixin(
 
     // Auth services
     this.bind('services.jwt.service').toClass(JWTService);
+    this.bind('services.GeminiService').toClass(GeminiService);
+    this.bind('services.GitHubAppAuthService').toClass(GitHubAppAuthService);
+    this.bind('services.WebhookQueueService').toClass(WebhookQueueService);
     this.component(AuthenticationComponent);
     registerAuthenticationStrategy(this, JWTStrategy);
 
     // Register controllers
     this.controller(AuthController);
     this.controller(AppliedJobsController);
+    this.controller(WebhookController);
+    this.controller(GitHubAppController);
+    this.controller(HealthController);
 
     // ✅ Register cron job
     // Register cron job

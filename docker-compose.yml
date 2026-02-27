@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: nit-placement-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: placement_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - placement-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: nit-placement-server
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=password
+      - DB_NAME=placement_db
+      - PORT=3000
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_WEBHOOK_SECRET=${GITHUB_WEBHOOK_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    networks:
+      - placement-network
+    command: npm start
+
+  # Optional: ngrok for local webhook testing
+  # Uncomment to use ngrok for exposing local server
+  # ngrok:
+  #   image: ngrok/ngrok:latest
+  #   container_name: nit-placement-ngrok
+  #   command: http 3000
+  #   ports:
+  #     - "4040:4040"
+  #   environment:
+  #     - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+  #   depends_on:
+  #     - server
+  #   networks:
+  #     - placement-network
+
+volumes:
+  mysql_data:
+
+networks:
+  placement-network:
+    driver: bridge
