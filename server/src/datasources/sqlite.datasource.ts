@@ -1,4 +1,4 @@
-import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
+import {inject} from '@loopback/core';
 import {juggler} from '@loopback/repository';
 import path from 'path';
 
@@ -9,8 +9,9 @@ const config = {
   debug: process.env.NODE_ENV === 'development',
 };
 
-@lifeCycleObserver('datasource')
-export class SqliteDataSource extends juggler.DataSource implements LifeCycleObserver {
+// SQLite datasource without @lifeCycleObserver
+// It's explicitly bound in application.ts, so no auto-discovery needed
+export class SqliteDataSource extends juggler.DataSource {
   static dataSourceName = 'sqlite';
   static readonly defaultConfig = config;
 

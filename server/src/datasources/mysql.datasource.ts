@@ -1,5 +1,5 @@
 import {juggler} from '@loopback/repository';
-import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
+import {inject} from '@loopback/core';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -14,8 +14,10 @@ const config = {
   database: process.env.MYSQL_DATABASE ?? 'test',
 };
 
-@lifeCycleObserver('datasource')
-export class MysqlDataSource extends juggler.DataSource implements LifeCycleObserver {
+// Export MySQL datasource WITHOUT @lifeCycleObserver decorator
+// This prevents auto-connection attempts on app startup
+// The datasource will only be instantiated when explicitly requested via application.ts
+export class MysqlDataSource extends juggler.DataSource {
   static dataSourceName = 'mysql';
 
   constructor(
