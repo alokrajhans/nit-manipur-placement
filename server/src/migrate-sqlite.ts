@@ -50,7 +50,8 @@ export async function migrate(args: string[]) {
     console.log('Altering schema...');
     await ds.autoupdate();
   }
-
+  //added one console log to show the database file being used after migration
+//added one console log to show the database file being used after migration
   console.log('✅ Migrations completed successfully!');
   console.log(`Database file: ${(ds as any).settings.file}`);
   process.exit(0);
