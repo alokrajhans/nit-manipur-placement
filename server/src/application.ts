@@ -70,8 +70,9 @@ export class ServerApplication extends BootMixin(
         extensions: ['.controller.js'],
         nested: true,
       },
+      // Disable auto-discovery of datasources to prevent MySQL from auto-connecting
       datasources: {
-        dirs: ['datasources'],
+        dirs: [],  // Empty array prevents auto-discovery
         extensions: ['.datasource.js'],
         nested: true,
       },
@@ -125,7 +126,9 @@ export class ServerApplication extends BootMixin(
    * Method to auto migrate database schema on app start
    */
   async migrateSchema(options?: { existingSchema?: 'drop' | 'alter' }) {
-    const ds = await this.get('datasources.mysql') as MysqlDataSource;
+    const dbType = process.env.DB_TYPE || 'sqlite';
+    const dsKey = dbType === 'mysql' ? 'datasources.MysqlDataSource' : 'datasources.SqliteDataSource';
+    const ds = await this.get(dsKey) as any;
 
     if (options?.existingSchema === 'drop') {
       await ds.automigrate();
